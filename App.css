@@ -1,0 +1,8 @@
+#formPanel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid;
+    padding-bottom: 10px;
+}
+
