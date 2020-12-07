@@ -1,86 +1,55 @@
+import React from 'react';
 import './displaydungeon.css';
+import BossPicture from './BossPicture';
+import Description from './Description';
+import BossAbilities from './BossAbilities';
 import { useEffect, useState } from 'react';
 
 
-const DisplayDungeon = ({ clickedBoss, bossArray, initialLoad, setInitialLoad }) => {
-    console.log(bossArray);
-    console.log(clickedBoss);
-    let [bossEncounterInfo, setBossEncounterInfo] = useState();
-    let [bossMedia, setBossMedia] = useState();
-
-
-    const boss = bossArray.filter(boss => boss.data.name.en_US.includes(clickedBoss))
-    console.log(boss);
+const DisplayDungeon = ({ clickedBoss, arrayOfAllBosses, initialLoad, apiKey }) => {
     let bossID;
     let bossPictureID;
-    let searched = false;
+    let [journalEncounterIDResult, setJournalEncounterIDResult] = useState(null);
+    let [isLoaded, setIsLoaded] = useState(false);
 
+    // filter arrayOfAllBosses for the boss that was clicked and save to 'boss'
+    // then save the boss's ID to query specific boss encounter in fetch && id for boss media
+    const boss = arrayOfAllBosses.filter(boss => boss.data.name.en_US.includes(clickedBoss))
     if (boss[0]) {
         bossID = boss[0]['data']['id'];
         bossPictureID = boss[0]['data']['creatures'][0]['creature_display']['id']
-
     }
+    console.log(boss);
 
+    // fetch for boss-specific data using journal-encounter/{id} 
     useEffect(() => {
-        if (bossID) {
-            fetch('https://us.api.blizzard.com/data/wow/journal-encounter/' + bossID + '?namespace=static-us&locale=en_US&access_token=US568dbV6dLSp0FbsYa7lF14TQ4BY88zJR', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded', }
-            })
-                .then(res => res.json())
-                .then((result => {
-                    setBossEncounterInfo(result);
-                }));
-        };
-        return () => { }
-    }, [setBossEncounterInfo, bossID]);
+        let fetchAPI = 'https://us.api.blizzard.com/data/wow/journal-encounter/' + bossID + '?namespace=static-us&locale=en_US&access_token=' + apiKey
 
-    useEffect(() => {
-        if (bossPictureID) {
-            fetch('https://us.api.blizzard.com/data/wow/media/creature-display/' + bossPictureID + '?namespace=static-us&locale=en_US&access_token=US568dbV6dLSp0FbsYa7lF14TQ4BY88zJR', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded', }
-            })
-                .then(res => res.json())
-                .then((result => {
-                    setBossMedia(result['assets'][0]['value']);
-                }));
-        }
-    }, [bossPictureID, setBossMedia])
+        fetch(fetchAPI, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        }).then(response =>
+            response.json()
+        ).then(result => {
+            setJournalEncounterIDResult(result);
+            setIsLoaded(true);
+        });
 
-
-    if (initialLoad === true) {
-        return (
-            <div>
-                <h1>Please select a boss</h1>
-            </div>
-        );
-    }
-
-    console.log(bossID);
-    console.log(bossPictureID);
-    console.log(bossEncounterInfo);
-    console.log(bossMedia);
-
-
-
-
-
+    }, [setIsLoaded, setJournalEncounterIDResult, bossID, apiKey])
 
     return (
         <div>
-            <h3 id='parentDiv'>
-                {boss[0]['data']['name']['en_US']}
-            </h3>
-            <img src={bossMedia} alt=' boss' width='200px' height='200px'></img>
+            <h1 id='bossName'>{boss[0]['data']['name']['en_US']}</h1>
+            <BossPicture bossMedia={'https://render-us.worldofwarcraft.com/npcs/zoom/creature-display-' + bossPictureID + '.jpg'} />
+            { isLoaded === true && <Description journalEncounterIDResult={journalEncounterIDResult} isLoaded={isLoaded} />}
+            { isLoaded === true && <BossAbilities journalEncounterIDResult={journalEncounterIDResult} />}
 
-
-
-        </div >
-
-
+        </div>
     );
 
 }
-// TODO: Delete remove DungeonInput.js from folder
+
+
 export default DisplayDungeon;
