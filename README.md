@@ -1,7 +1,3 @@
 # WoW-Dungeon-Journal
-Built with React
 
-Dec 6, 2020
-- Pre-styled rough draft of the application 
-- Sidebar does not yet scroll with user
-- Full functionality to search any dungeon or raid in World of Warcraft
+A web application of the World of Warcraft in-game dungeon journal used to search for information about different dungeons and raids throughout the game. Users of this web application can enter the name of a dungeon/raid to view information about each boss in the instance. 
