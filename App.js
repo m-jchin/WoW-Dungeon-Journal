@@ -23,7 +23,10 @@ const useFetch = (id, secret) => {
   }
 
   useEffect(() => {
-    getToken(id, secret).then(key => { setData(key) });
+    let isMounted = true;
+    getToken(id, secret).then(key => { if (isMounted) setData(key) });
+
+    return () => { isMounted = false };
   });
 
   return data
@@ -33,21 +36,22 @@ const useFetch = (id, secret) => {
 function App() {
   let id = CONFIG.id;
   let secret = CONFIG.secret;
-
   const apiKey = useFetch(id, secret);
-  const [dungeonJSON, setDungeonJSON] = useState(null);
   let [searched, setSearched] = useState(false);
-  let [dungeon, setDungeon] = useState('');
-  let [globalLoad, setGlobalLoad] = useState(true);
-  let [initialLoad, setInitialLoad] = useState(true);
+  let [dungeon, setDungeon] = useState();
+  const [selectionMessage, setSelectionMessage] = useState(false);
+
+  //console.log(dungeon);
 
   return (
     <div>
-      <span id='formPanel'>
-        <h1 id='title'>Dungeon Journal</h1>
-        <DungeonForm apiKey={apiKey} dungeonJSON={dungeonJSON} setDungeonJSON={setDungeonJSON} setSearched={setSearched} setDungeon={setDungeon} setGlobalLoad={setGlobalLoad} setInitialLoad={setInitialLoad} />
-      </span>
-      {searched && <GenerateInfo dungeon={dungeon} apiKey={apiKey} dungeonJSON={dungeonJSON} setDungeonJSON={setDungeonJSON} globalLoad={globalLoad} initialLoad={initialLoad} setInitialLoad={setInitialLoad} />}
+      {searched === false &&
+        <span id='formPanel'>
+          <h1 id='title'>Dungeon Journal</h1>
+          <DungeonForm setSearched={setSearched} setDungeon={setDungeon} size={'75'} setSelectionMessage={setSelectionMessage} />
+        </span>}
+
+      {searched && <GenerateInfo dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
     </div>
   );
 

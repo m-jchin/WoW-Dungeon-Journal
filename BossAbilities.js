@@ -1,14 +1,14 @@
 import React from 'react';
 import './bossabilities.css';
 
-const BossAbilities = ({ journalEncounterIDResult }) => {
+const BossAbilities = ({ abilities }) => {
+    if (!abilities) return null;
 
-    console.log(journalEncounterIDResult['sections'])
-    //let sections = journalEncounterIDResult['sections'][0]['title'];
-    let sections = journalEncounterIDResult['sections'].map(ability => {
-        if (ability['sections']) {
+    // console.log(abilities);
+    let sections = abilities.map(ability => {
+        if (ability['sections']) { // for subsections
             return (
-                <div>
+                <div >
                     <h2>{ability['title']}</h2>
                     <div>{ability['body_text']}</div>
                     <div>
@@ -24,7 +24,7 @@ const BossAbilities = ({ journalEncounterIDResult }) => {
         }
         else {
             return (
-                <div>
+                <div >
                     <h2>{ability['title']}</h2>
                     <span>{ability['body_text']}</span>
 
