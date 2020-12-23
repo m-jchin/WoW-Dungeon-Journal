@@ -1,19 +1,81 @@
+import DungeonForm from './DungeonForm';
+import "./sidebar.css"
+import React from 'react';
+import { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ScrollToTop from './ScrollToTop';
 
-import "./sidebar.css";
-import React from "react";
+const drawerWidth = 240;
 
-export const Sidebar = ({ width, height, children, dungeonName }) => {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        height: 100 % '!important',
+        flexDirection: 'column',
+        borderRadius: 0,
 
-    // user clicks name on sidebar -> setState in parent to rerender DisplayDungeon
+    },
 
+    drawer: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    itemList: {
+        textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+
+
+    },
+    content: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.default,
+        padding: theme.spacing(3),
+    },
+    scrollTop: {
+        marginTop: '500px',
+    },
+}));
+
+
+
+export default function Sidebar({ children, setSearched, dungeonName, setDungeon, setSelectionMessage }) {
+    const classes = useStyles();
     return (
-        <div className='side-bar' style={{ width: width, minHeight: height }}>
-            <React.Fragment>
-                <h2 id='dungeonTitle'>{dungeonName}</h2>
-                {children}
-            </React.Fragment>
+        <div>
+            <div className={classes.root}>
+                <CssBaseline />
+                <Drawer
+                    className={classes.drawer}
+                    variant="permanent"
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                    anchor="left"
+                >
+                    <DungeonForm className='sidebarSearch' size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
+                    <h1 id='title'>{dungeonName}</h1>
+                    <List>
+                        {children.map((text, index) => (
+                            <ListItem key={index} button className={classes.itemList}>
+                                <ListItemText primary={text} />
+                            </ListItem>
+                        ))}
+                    </List>
+                    <ScrollToTop className={classes.scrollTop} />
+
+                </Drawer>
+            </div>
         </div>
     );
-};
-
-export default Sidebar;
+}
