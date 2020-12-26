@@ -18,12 +18,9 @@ const useStyles = makeStyles((theme) => ({
         height: 100 % '!important',
         flexDirection: 'column',
         borderRadius: 0,
-
     },
-
     drawer: {
-        display: 'flex',
-        flexDirection: 'column',
+        position: 'relative',
         width: drawerWidth,
         flexShrink: 0,
     },
@@ -34,17 +31,15 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         display: 'flex',
         justifyContent: 'center',
-
-
     },
     content: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(3),
     },
-    scrollTop: {
-        marginTop: '500px',
-    },
+
+
+
 }));
 
 
@@ -52,30 +47,31 @@ const useStyles = makeStyles((theme) => ({
 export default function Sidebar({ children, setSearched, dungeonName, setDungeon, setSelectionMessage }) {
     const classes = useStyles();
     return (
-        <div>
-            <div className={classes.root}>
-                <CssBaseline />
-                <Drawer
-                    className={classes.drawer}
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                    anchor="left"
-                >
-                    <DungeonForm className='sidebarSearch' size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
-                    <h1 id='title'>{dungeonName}</h1>
-                    <List>
-                        {children.map((text, index) => (
-                            <ListItem key={index} button className={classes.itemList}>
-                                <ListItemText primary={text} />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <ScrollToTop className={classes.scrollTop} />
+        <div className={classes.root}>
+            <Drawer
+                className={classes.drawer}
+                variant="permanent"
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+                anchor="left"
+            >
+                <DungeonForm className='sidebarSearch' size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
+                <h1 id='title'>{dungeonName}</h1>
+                <List>
+                    {children.map((text, index) => (
+                        <ListItem key={index} button className={classes.itemList}>
+                            <ListItemText primary={text} />
+                        </ListItem>
+                    ))}
+                </List>
 
-                </Drawer>
-            </div>
+                <div id='scrollTopDiv'>
+                    <ScrollToTop />
+                </div>
+            </Drawer>
+
         </div>
+
     );
 }

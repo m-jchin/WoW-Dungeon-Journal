@@ -1,16 +1,17 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './dungeonform.css';
 
 
 const DungeonForm = ({ setSearched, setDungeon, size, setSelectionMessage }) => {
-    let [query, setQuery] = useState('');
+    const [query, setQuery] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setSearched(true);
         setSelectionMessage(true)
         setDungeon(query.replace(' ', '%20')); // dungeon entered from user saved with setDungeon prop. '%20' needs to replaces spaces for valid api query
+        setQuery('');
     }
 
     const handleType = (e) => {
@@ -24,8 +25,6 @@ const DungeonForm = ({ setSearched, setDungeon, size, setSelectionMessage }) => 
                 <input type="submit" value="Search" />
             </form>
         </div>
-
-
     );
 }
 

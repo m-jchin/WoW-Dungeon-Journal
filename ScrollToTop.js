@@ -22,11 +22,9 @@ const ScrollToTop = () => {
 
     return (
         <div className='scrollTopBtn'>
-
             <IconButton aria-label="delete" className='upIcon' size="small" onClick={(e) => handleSubmit(e)}>
                 <ArrowUpwardIcon size='large' fontSize="large" />
             </IconButton>
-
         </div>
     );
 }
