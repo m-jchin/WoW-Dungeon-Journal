@@ -1,0 +1,13 @@
+.items{
+    width: 20%;
+}
+
+.itemDiv{
+    display: flex;
+    flex-direction: row;
+    margin-top: 5px;
+}
+
+.itemImg{
+    margin-right: 5px;
+}

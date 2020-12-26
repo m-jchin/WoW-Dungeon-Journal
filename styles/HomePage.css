@@ -1,0 +1,12 @@
+#formPanel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.registerButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
