@@ -1,10 +1,9 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 import './registerform.css';
 
 const useStyles = makeStyles({
@@ -26,7 +25,6 @@ const useStyles = makeStyles({
 
 
 
-
 const RegisterForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -42,6 +40,22 @@ const RegisterForm = () => {
         e.preventDefault();
         console.log(username)
         console.log(password);
+        let obj = {
+            'username': username,
+            'password': password
+        };
+
+
+        console.log(obj);
+        fetch('http://localhost:8080/RegisterForm', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        });
+
         history.push('/');
     }
 
@@ -52,6 +66,7 @@ const RegisterForm = () => {
     const handlePassword = (e) => {
         setPassword(e.target.value);
     }
+
 
     return (
         <div id='formDiv'>

@@ -54,7 +54,7 @@ function HomePage() {
                     <h1 id='title'>Dungeon Journal</h1>
                     <DungeonForm setSearched={setSearched} setDungeon={setDungeon} size={'75'} setSelectionMessage={setSelectionMessage} />
                 </span>}
-            <Link className='registerButton' to='/RegisterForm'>Register</Link>
+            {!searched && <Link className='registerButton' to='/RegisterForm'>Register</Link>}
             {!searched && <div id='registerAndSignIn'>
             </div >}
             { searched && <GenerateInfo dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
