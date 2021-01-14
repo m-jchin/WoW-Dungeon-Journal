@@ -1,11 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './App.css';
-import DungeonForm from './DungeonForm';
-import GenerateInfo from './GenerateInfo';
+
 import RegisterForm from './RegisterForm';
-import HomePage from './HomePage';
 import SignIn from './SignIn';
+import HomePage from './HomePage';
 import { Link, Switch, BrowserRouter, Route } from 'react-router-dom';
 let CONFIG = require('./apikeys.json');
 
@@ -18,6 +17,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/RegisterForm" component={RegisterForm} />
+          <Route path='/SignIn' component={SignIn} />
           <Route path="/" exact component={HomePage} />
         </Switch>
       </BrowserRouter>

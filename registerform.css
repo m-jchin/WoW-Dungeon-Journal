@@ -1,0 +1,56 @@
+#formDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 50px;
+  
+}
+
+#registerForm{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+}
+
+#passwordLabel{
+    margin-top: 30px;
+}
+
+#usernameLabel{
+    margin-top: 30px;
+}
+
+#buttons{
+    display: flex;
+    flex-direction: row;
+}
+#backBtn{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 50%;
+}
+#signUpBtn{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 50%;
+    margin-left:10px;
+}
+
+#createAccount{
+    display: flex;
+    justify-content: center;
+}
+
+#title{
+    display: flex;
+    justify-content: center;
+}
+
+#cardDiv{
+
+    display: flex;
+    justify-content: center;
+}
+

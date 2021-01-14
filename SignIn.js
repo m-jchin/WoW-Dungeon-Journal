@@ -24,10 +24,24 @@ const useStyles = makeStyles({
 });
 
 
+const login = async (obj) => {
+    let response = await fetch('http://localhost:8080/SignIn', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+    });
 
-const RegisterForm = () => {
+    console.log(response);
+    return response.json();
+}
+
+const SignIn = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
     let history = useHistory(); // react router hook to navigate back to home
     const classes = useStyles();
 
@@ -38,24 +52,16 @@ const RegisterForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(username)
-        console.log(password);
+
         let obj = {
             'username': username,
             'password': password
         };
 
 
-        console.log(obj);
-        fetch('http://localhost:8080/RegisterForm', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        });
 
+        login(obj).then((res) => console.log(res));
+        //  console.log(JSON.stringify(x));
         history.push('/');
     }
 
@@ -67,7 +73,6 @@ const RegisterForm = () => {
         setPassword(e.target.value);
     }
 
-
     return (
         <div id='formDiv'>
             <h1 id='title'>Dungeon Journal</h1>
@@ -75,7 +80,7 @@ const RegisterForm = () => {
                 <Card className={classes.root} variant='outlined'>
                     <CardContent>
                         <form id='registerForm' onSubmit={(e) => handleSubmit(e)} >
-                            <h2 id='createAccount'>Create Account</h2>
+                            <h2 id='createAccount'>Sign In</h2>
                             <label id='usernameLabel' htmlFor="username">Username:</label>
                             <input required id='username' type="text" value={username} onChange={(e) => handleUsername(e)} />
 
@@ -84,7 +89,7 @@ const RegisterForm = () => {
 
                             <div id='buttons'>
                                 <input id='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} />
-                                <input id='signUpBtn' type="submit" value="Sign Up" />
+                                <input id='signUpBtn' type="submit" value="Sign In" />
                             </div>
 
                         </form>
@@ -95,4 +100,5 @@ const RegisterForm = () => {
     );
 }
 
-export default RegisterForm;
+
+export default SignIn;

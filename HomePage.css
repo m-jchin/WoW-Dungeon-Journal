@@ -1,0 +1,41 @@
+#formPanel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+#title{
+    color: rgb(242, 242, 242);
+}
+
+.registerButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: rgb(242, 242, 242);
+    text-decoration: none;
+}
+.registerButton:visited { text-decoration: none; color:rgb(242, 242, 242); }
+
+.homePageDiv{
+    height: 100vh;
+    background-color:rgb(46, 45, 45); 
+}
+
+.registerAndSignIn{
+    display: flex;
+    justify-content: center;
+}
+.divider{
+    width: 5px;
+}
+
+.registerButton{
+    width: 70px;
+    height:  25px;
+    border: 2px solid rgb(67, 63, 63);
+    background-color: rgb(187, 34, 17);
+    color: rgb(242, 242, 242);
+}

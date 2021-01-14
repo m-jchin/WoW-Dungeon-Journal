@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react';
 import './HomePage.css';
 import DungeonForm from './DungeonForm';
 import GenerateInfo from './GenerateInfo';
-//import Register from './Register';
-import RegisterForm from './RegisterForm';
 import SignIn from './SignIn';
-import { Link, Switch, BrowserRouter, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 let CONFIG = require('./apikeys.json');
 
 // custom hook to make AJAX call for API key using API credentials
@@ -48,14 +46,17 @@ function HomePage() {
     //console.log(dungeon);
 
     return (
-        <div>
+        <div className='homePageDiv'>
             {searched === false &&
                 <span id='formPanel'>
                     <h1 id='title'>Dungeon Journal</h1>
                     <DungeonForm setSearched={setSearched} setDungeon={setDungeon} size={'75'} setSelectionMessage={setSelectionMessage} />
                 </span>}
-            {!searched && <Link className='registerButton' to='/RegisterForm'>Register</Link>}
-            {!searched && <div id='registerAndSignIn'>
+
+            {!searched && <div className='registerAndSignIn'>
+                <Link className='registerButton' to='/RegisterForm'>Register</Link>
+                <div className='divider'></div>
+                <Link className='registerButton' to='/SignIn'>Sign In</Link>
             </div >}
             { searched && <GenerateInfo dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
         </div >

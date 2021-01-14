@@ -5,10 +5,9 @@ const Description = ({ description }) => {
 
 
     return (
-        <div>
-            <p>{description}</p>
 
-        </div>
+        <p className='infoFont'>{description}</p>
+
     );
 }
 

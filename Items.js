@@ -1,76 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './items.css';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
 
-
-const HtmlTooltip = withStyles((theme) => ({
-    tooltip: {
-        backgroundColor: '#f5f5f9',
-        color: 'rgba(0, 0, 0, 0.87)',
-        maxWidth: 220,
-        fontSize: theme.typography.pxToRem(12),
-        border: '1px solid #dadde9',
-    },
-}))(Tooltip);
-
-/*
-const useFetchItemInfo = (itemIDs, apiKey, setItemsLoaded) => {
-    const [data, setData] = useState(null);
-
-
-    async function getItemInfo(itemIDs, apiKey) {
-        let arr = []
-        for (let i = 0; i < itemIDs.length; i++) {
-            let callAPI = 'https://us.api.blizzard.com/data/wow/item/' + itemIDs[i] + '?namespace=static-us&locale=en_US&access_token=' + apiKey
-            let response = await fetch(callAPI, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            let json = await response.json()
-            arr.push(json);
-        }
-        return arr
-    }
-
-    useEffect(() => {
-        getItemInfo(itemIDs, apiKey).then(res => setData(res));
-        setItemsLoaded(true);
-    }, []);
-
-    //console.log(data);
-    return data
-}
-
-*/
-/*
-
-const useFetchItemMedia = (id, apiKey, setImagesLoaded) => {
-    const [data, setData] = useState();
-    async function getItemInfo(id, apiKey) {
-        let callAPI = 'https://us.api.blizzard.com/data/wow/media/item/' + id + '?namespace=static-us&locale=en_US&access_token=' + apiKey
-        let response = await fetch(callAPI, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-        let json = await response.json()
-        return json;
-    }
-
-
-
-
-    useEffect(() => {
-        getItemInfo(id, apiKey).then(res => setData(res));
-    }, [])
-    return data;
-}
-*/
 const Items = ({ items, apiKey }) => {
     const [data, setData] = useState(null);
 
@@ -110,9 +41,8 @@ const Items = ({ items, apiKey }) => {
             return (
 
                 <div className='itemDiv'>
-
                     <img src={img['assets'][0]['value']}></img>
-                    {itemName && <h2>{itemName['item']['name']}</h2>}
+                    {itemName && <h2 className='items'>{itemName['item']['name']}</h2>}
                 </div>
             );
         })

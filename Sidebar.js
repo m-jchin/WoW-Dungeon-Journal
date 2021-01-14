@@ -1,77 +1,43 @@
-import DungeonForm from './DungeonForm';
 import "./sidebar.css"
 import React from 'react';
-import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ScrollToTop from './ScrollToTop';
 
-const drawerWidth = 240;
+
+const drawerWidth = 250;
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        height: 100 % '!important',
-        flexDirection: 'column',
-        borderRadius: 0,
-    },
     drawer: {
-        position: 'relative',
         width: drawerWidth,
         flexShrink: 0,
     },
     drawerPaper: {
-        width: drawerWidth,
-    },
-    itemList: {
-        textAlign: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-    },
-    content: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.default,
-        padding: theme.spacing(3),
+        marginTop: '8%',
+
+        width: '250px',
+        backgroundColor: 'rgb(46, 45, 45)',
+        borderBottom: '4px solid gray',
+
+        textAlign: 'left',
     },
 
-
-
+    list: {
+        color: 'red',
+    }
 }));
 
 
-
-export default function Sidebar({ children, setSearched, dungeonName, setDungeon, setSelectionMessage }) {
+export default function Sidebar({ children, dungeonName }) {
     const classes = useStyles();
+    console.log(children);
     return (
-        <div className={classes.root}>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                anchor="left"
-            >
-                <DungeonForm className='sidebarSearch' size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
-                <h1 id='title'>{dungeonName}</h1>
-                <List>
-                    {children.map((text, index) => (
-                        <ListItem key={index} button className={classes.itemList}>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
+        <div className='sidebarDiv'>
+            <h1 id='dungeonNameSidebar'>{dungeonName}</h1>
+            {<ol className={classes.list}>
+                {children.map((text, index) => (
+                    <li key={index} className='listItem'>{text}</li>
+                ))}
+            </ol>}
 
-                <div id='scrollTopDiv'>
-                    <ScrollToTop />
-                </div>
-            </Drawer>
-
-        </div>
-
+        </div >
     );
 }

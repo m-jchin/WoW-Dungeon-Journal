@@ -3,9 +3,30 @@ import { useState, useEffect } from 'react';
 import DisplayBossInfo from './DisplayBossInfo';
 import DungeonForm from './DungeonForm';
 import Sidebar from './Sidebar';
-import ScrollToTop from './ScrollToTop';
 import './generateinfo.css';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
 
+
+const useStyles = makeStyles((theme) => ({
+    sidebarButton: {
+        color: 'rgb(242, 242, 242)',
+        fontSize: '12px',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        textTransform: 'none',
+    },
+    buttons: {
+        color: 'rgb(242, 242, 242)',
+        height: '40px',
+        marginLeft: '2px',
+        borderRadius: '5px',
+        border: '2px solid rgb(67, 63, 63)',
+        backgroundColor: 'rgb(187, 34, 17)',
+    },
+}));
 
 // custom hook to make AJAX call the entire dungeon API json
 const useFetchDungeonJSON = (dungeon, apiKey, setDungeonIsLoaded) => {
@@ -74,6 +95,7 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
     const [dungeonIsLoaded, setDungeonIsLoaded] = useState(false);
     const [clickedBoss, setClickedBoss] = useState();
     const [bossIsLoaded, setBossIsLoaded] = useState(false);
+    const classes = useStyles();
 
     let dungeonName;
     let sideBarNames = [];
@@ -107,7 +129,7 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
             window.scrollTo(0, 0);
         }
 
-        sideBarNames = sideBarNames.map(name => <button key={name} type='button' className='sideBarNames' onClick={() => saveBoss(name)}>{name}</button>);
+        sideBarNames = sideBarNames.map(name => <Button key={name} className={classes.sidebarButton} onClick={() => saveBoss(name)}>{name}</Button>);
 
         // filter arrayOfAllBosses for the boss that was clicked and save to 'boss'
         // then save the boss's ID to query specific boss encounter in fetch && id for boss media
@@ -137,20 +159,36 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
     else {
         return (
             <div id='container'>
-                {dungeonIsLoaded === true &&
-                    <Sidebar width={300} height={'100vh'} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
-                        {sideBarNames}
-                    </Sidebar>
-                }
-                {selectionMessage && dungeonJSON && <div id='selectBossIntro'><h1>Please select a boss</h1></div>}
-                {clickedBossJSON !== null && !selectionMessage &&
-                    <div id='infoPanel'>
-                        <DisplayBossInfo clickedBossJSON={clickedBossJSON} bossIsLoaded={bossIsLoaded} bossID={bossID} bossPictureID={bossPictureID} apiKey={apiKey} />
-                    </div>}
-            </div >
+                <AppBar id='menuRoot' position="fixed">
+                    <Toolbar className='menuBarSearch'>
+                        <h2 id='appTitle'>Dungeon Journal</h2>
+                        <div id='dungeonFormDiv'>
+                            <DungeonForm size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
+                        </div>
+                        <div id='loginRegister'>
+                            <Button className={classes.buttons}>Register</Button>
+                            <Button className={classes.buttons}>Sign In</Button>
+
+                        </div>
+                    </Toolbar>
+                </AppBar>
+
+                <div className='sidebarAndBossInfo'>
+                    {dungeonIsLoaded === true &&
+                        <Sidebar className='Sidebar' width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
+                            {sideBarNames}
+                        </Sidebar>
+                    }
+                    <div className='bossIntroAndInfo'>
+                        {selectionMessage && dungeonJSON && <div id='selectBossIntro'><h1>Please select a boss</h1></div>}
+                        {clickedBossJSON !== null && !selectionMessage && <DisplayBossInfo clickedBossJSON={clickedBossJSON} bossIsLoaded={bossIsLoaded} bossID={bossID} bossPictureID={bossPictureID} apiKey={apiKey} />}
+                    </div>
+
+                </div>
+            </div>
+
         );
     }
-    //{dungeonIsLoaded === false && fetched && dungeonJSON !== '' && <DisplayDungeon arrayOfAllBosses={arrayOfAllBosses} dungeonIsLoaded={dungeonIsLoaded} clickedBoss={clickedBoss} apiKey={apiKey} bossIsLoaded={bossIsLoaded} setBossIsLoaded={setBossIsLoaded} searched={searched} bossMan={bossMan} />}
 
 }
 

@@ -1,10 +1,11 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './dungeonform.css';
 
 
 const DungeonForm = ({ setSearched, setDungeon, size, setSelectionMessage }) => {
     const [query, setQuery] = useState('');
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -19,12 +20,10 @@ const DungeonForm = ({ setSearched, setDungeon, size, setSelectionMessage }) => 
     }
 
     return (
-        <div>
-            <form id='form' onSubmit={(e) => handleSubmit(e)} >
-                <input required id='inputText' type="text" value={query} size={size} onChange={(e) => handleType(e)} />
-                <input type="submit" value="Search" />
-            </form>
-        </div>
+        <form className='form' onSubmit={(e) => handleSubmit(e)} >
+            <input required className='searchField' placeholder='Enter instance name..' type="text" value={query} size={size} onChange={(e) => handleType(e)} />
+            <input className='searchButton' type="submit" value="Search" />
+        </form>
     );
 }
 

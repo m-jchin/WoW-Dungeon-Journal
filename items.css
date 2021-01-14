@@ -1,0 +1,18 @@
+.items{
+    width: 20%;
+   
+}
+
+.itemDiv{
+    display: flex;
+    flex-direction: row;
+    margin-top: 5px;
+}
+
+.itemImg{
+   
+}
+.items{
+    margin-left: 10px;
+    color:white;
+}
