@@ -9,12 +9,31 @@ const uri = "mongodb+srv://mchin:lazdaCilRytXKW5C@cluster0.yc6vs.mongodb.net/dun
 const bcrypt = require('bcrypt');
 const { resolve } = require('path');
 const saltRounds = 10;
-
+const session = require('express-session');
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session()); // persist login sessions 
+
+const authenticateLogin = async (passport, username, password) => {
+
+}
+passport.use(new LocalStrategy(authenticateLogin));
+
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) { // if already logged in, redirect away to home page
+        res.redirect('/');
+    }
+    else {
+        next(); //if not authenticated, continue with login 
+    }
+}
 
 const pushToDB = async (user, pw) => {
     let hash = '22';
@@ -52,7 +71,6 @@ const validateCredentials = async (user, pw) => {
         useUnifiedTopology: true,
     });
 
-
     const db = await client.db('dungeonJournal');
 
     // findOne returns a Cursor obj
@@ -65,6 +83,7 @@ const validateCredentials = async (user, pw) => {
     let isValid = await bcrypt.compare(pw, pwHash);
     //console.log(isValid);
     if (isValid) {
+
         return true;
     }
     else {
@@ -85,12 +104,11 @@ app.post('/SignIn', (req, res) => {
     let pw = req.body.password;
 
     validateCredentials(user, pw).then((response) => res.send(response));
-
-
-
     // res.send(x);
 
 });
+
+app.post('/SignIn', passport.authenticate('local', { failureRedirect: '/SignIn' }), isLoggedIn);
 
 app.post('/RegisterForm', function (req, res) {
     let user = null;
