@@ -101,11 +101,32 @@ app.get('/', (req, res) => {
     res.send('Server Online');
 });
 
-app.post('/SignIn', passport.authenticate('local'), isLoggedIn);
+app.post('/SignIn', (req, res, next) => {
+
+    passport.authenticate('local', (e, user, info) => {
+
+        if (e) {
+            console.log('ERROR: ' + e);
+            res.send(false);
+        };
+        console.log('req.body.username: ' + req.body.username);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        let x = JSON.stringify(req.body.username);
+        console.log('Sent to frontend: ' + req.body.username);
+        res.write(x);
+        res.end();
+
+
+
+    })(req, res, next);
+
+
+});
 
 passport.use(new LocalStrategy(
     async (username, password, done) => {
-        console.log(password);
+
         let credentials;
         try {
             credentials = await validateCredentials(username, password);
@@ -115,7 +136,7 @@ passport.use(new LocalStrategy(
             console.log(e);
         }
 
-        console.log(credentials);
+        console.log('Credentials valid?  ' + credentials);
 
         if (credentials) {
             // verify callback for passport 
@@ -129,12 +150,10 @@ passport.use(new LocalStrategy(
 ));
 
 passport.serializeUser((username, done) => {
-    console.log(username + '137');
     done(null, username);
 });
 
 passport.deserializeUser((username, done) => {
-    console.log(username + '137');
     return done(null, username);
 });
 

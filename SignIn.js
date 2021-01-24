@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,6 +6,10 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import './registerform.css';
 import { Link, Switch, BrowserRouter, Route } from 'react-router-dom';
+import { json } from 'body-parser';
+import { render } from 'react-dom';
+import FlashMessage from 'react-flash-message'
+
 
 const useStyles = makeStyles({
     root: {
@@ -26,6 +30,7 @@ const useStyles = makeStyles({
 
 
 const login = async (obj) => {
+    // let x;
     let response = await fetch('http://localhost:8080/SignIn', {
         method: 'POST',
         headers: {
@@ -33,15 +38,17 @@ const login = async (obj) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(obj)
-    });
-
+    }).then((res) => res.json())
+        .then((res) => { console.log(res); return res });
     console.log(response);
     return response;
+
 }
 
 const SignIn = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [response, setResponse] = useState(null);
 
     let history = useHistory(); // react router hook to navigate back to home
     const classes = useStyles();
@@ -50,35 +57,33 @@ const SignIn = () => {
         e.preventDefault();
         history.push('/');
     }
-
+    let obj = {
+        "username": username,
+        "password": password
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Username: ' + username + ', ' + 'Password: ' + password);
-        let obj = {
-            "username": username,
-            "password": password
-        };
 
 
 
         login(obj).then((res) => {
-            if (res['status'] === 200) {
-                console.log('logged in!');
-                history.push('/');
+            console.log(res);
+            if (res === 'ming') {
+                console.log('!!!!');
+                setResponse(res);
+                return res;
             }
-            else if (res['status'] === 401) {
-                <BrowserRouter>
 
-                    <Route path='/SignIn' component={SignIn} />
-
-                </BrowserRouter>
-            }
         });
-
-        //  console.log(JSON.stringify(x));
+        console.log(response);
 
     }
-
+    useEffect(() => {
+        if (response === obj.username) {
+            console.log('logging in');
+        }
+    })
     const handleUsername = (e) => {
         setUsername(e.target.value);
     }
@@ -86,7 +91,6 @@ const SignIn = () => {
     const handlePassword = (e) => {
         setPassword(e.target.value);
     }
-
     return (
         <div id='formDiv'>
             <h1 id='title'>Dungeon Journal</h1>
