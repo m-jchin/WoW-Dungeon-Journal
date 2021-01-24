@@ -21,10 +21,7 @@ const LocalStrategy = require('passport-local').Strategy;
 app.use(passport.initialize());
 app.use(passport.session()); // persist login sessions 
 
-const authenticateLogin = async (passport, username, password) => {
 
-}
-passport.use(new LocalStrategy(authenticateLogin));
 
 const isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) { // if already logged in, redirect away to home page
@@ -32,6 +29,41 @@ const isLoggedIn = (req, res, next) => {
     }
     else {
         next(); //if not authenticated, continue with login 
+    }
+}
+
+const validateCredentials = async (username, password) => {
+    let pwHash;
+
+    const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    const db = await client.db('dungeonJournal');
+
+    try {
+        let cursor = await db.collection('loginCredentials').findOne({
+            username: username
+        });
+
+        pwHash = cursor.password;
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+    // findOne returns a Cursor obj
+
+
+    let isValid = await bcrypt.compare(password, pwHash);
+    //console.log(isValid);
+    if (isValid) {
+
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -65,65 +97,61 @@ const pushToDB = async (user, pw) => {
     client.close();
 }
 
-const validateCredentials = async (user, pw) => {
-    const client = await MongoClient.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-
-    const db = await client.db('dungeonJournal');
-
-    // findOne returns a Cursor obj
-    let cursor = await db.collection('loginCredentials').findOne({
-        username: user
-    });
-
-    let pwHash = cursor.password;
-
-    let isValid = await bcrypt.compare(pw, pwHash);
-    //console.log(isValid);
-    if (isValid) {
-
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-
-
 app.get('/', (req, res) => {
     res.send('Server Online');
 });
 
-app.post('/SignIn', (req, res) => {
-    //console.log(req.body);
+app.post('/SignIn', passport.authenticate('local'), isLoggedIn);
 
-    let user = req.body.username;
-    let pw = req.body.password;
+passport.use(new LocalStrategy(
+    async (username, password, done) => {
+        console.log(password);
+        let credentials;
+        try {
+            credentials = await validateCredentials(username, password);
 
-    validateCredentials(user, pw).then((response) => res.send(response));
-    // res.send(x);
+        }
+        catch (e) {
+            console.log(e);
+        }
 
+        console.log(credentials);
+
+        if (credentials) {
+            // verify callback for passport 
+            return done(null, username);
+        }
+        else {
+            return done(null, false, { message: 'Incorrect password' });
+        }
+    }
+
+));
+
+passport.serializeUser((username, done) => {
+    console.log(username + '137');
+    done(null, username);
 });
 
-app.post('/SignIn', passport.authenticate('local', { failureRedirect: '/SignIn' }), isLoggedIn);
+passport.deserializeUser((username, done) => {
+    console.log(username + '137');
+    return done(null, username);
+});
 
 app.post('/RegisterForm', function (req, res) {
-    let user = null;
-    let pw = null;
+    let username = null;
+    let password = null;
 
     res.send('Received login credentials!');
 
-    user = req.body.username;
-    pw = req.body.password;
+    username = req.body.username;
+    password = req.body.password;
 
-    console.log(user);
-    console.log(pw);
+    console.log(username);
+    console.log(password);
 
     // send user/pw to db
-    pushToDB(user, pw);
+    pushToDB(username, password);
 
 });
 

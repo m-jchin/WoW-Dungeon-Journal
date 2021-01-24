@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import './registerform.css';
+import { Link, Switch, BrowserRouter, Route } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root: {
@@ -35,7 +36,7 @@ const login = async (obj) => {
     });
 
     console.log(response);
-    return response.json();
+    return response;
 }
 
 const SignIn = () => {
@@ -52,17 +53,30 @@ const SignIn = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        console.log('Username: ' + username + ', ' + 'Password: ' + password);
         let obj = {
-            'username': username,
-            'password': password
+            "username": username,
+            "password": password
         };
 
 
 
-        login(obj).then((res) => console.log(res));
+        login(obj).then((res) => {
+            if (res['status'] === 200) {
+                console.log('logged in!');
+                history.push('/');
+            }
+            else if (res['status'] === 401) {
+                <BrowserRouter>
+
+                    <Route path='/SignIn' component={SignIn} />
+
+                </BrowserRouter>
+            }
+        });
+
         //  console.log(JSON.stringify(x));
-        history.push('/');
+
     }
 
     const handleUsername = (e) => {
