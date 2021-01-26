@@ -5,10 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import './registerform.css';
-import { Link, Switch, BrowserRouter, Route } from 'react-router-dom';
-import { json } from 'body-parser';
-import { render } from 'react-dom';
-import FlashMessage from 'react-flash-message'
+import Cookies from 'js-cookie';
+
+
 
 
 const useStyles = makeStyles({
@@ -35,12 +34,13 @@ const login = async (obj) => {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'withCredentials': true,
+
         },
         body: JSON.stringify(obj)
-    }).then((res) => res.json())
-        .then((res) => { console.log(res); return res });
-    console.log(response);
+    }).then((res) => { return res })
+
     return response;
 
 }
@@ -57,26 +57,28 @@ const SignIn = () => {
         e.preventDefault();
         history.push('/');
     }
+
     let obj = {
         "username": username,
         "password": password
     };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Username: ' + username + ', ' + 'Password: ' + password);
 
-
-
         login(obj).then((res) => {
             console.log(res);
-            if (res === 'ming') {
-                console.log('!!!!');
-                setResponse(res);
-                return res;
+            if (res.status === 200) {
+                res.json().then((res) => Cookies.set('username', res));
+                console.log('logged in');
             }
-
+            else if (res.status === 401) {
+                console.log('invalid login');
+            }
         });
-        console.log(response);
+
+        console.log(Cookies.get('username'))
 
     }
     useEffect(() => {
