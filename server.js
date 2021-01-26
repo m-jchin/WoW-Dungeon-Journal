@@ -18,16 +18,24 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 // passport middleware
+
 app.use(passport.initialize());
 app.use(passport.session()); // persist login sessions 
 
 
 
 const isLoggedIn = (req, res, next) => {
-    if (req.isAuthenticated()) { // if already logged in, redirect away to home page
-        res.redirect('/');
+    console.log(req.isAuthenticated());
+    if (!req.isAuthenticated()) { // if already logged in, redirect away to home page
+        console.log('already logged in');
+        res.header('Access-Control-Allow-Credentials', true);
+
+
     }
     else {
+        res.header('Access-Control-Allow-Credentials', true);
+
+        console.log('ERROR');
         next(); //if not authenticated, continue with login 
     }
 }
@@ -102,39 +110,32 @@ app.get('/', (req, res) => {
 });
 
 app.post('/SignIn', (req, res, next) => {
-
     passport.authenticate('local', (e, user, info) => {
-
         if (e) {
             console.log('ERROR: ' + e);
             res.send(false);
         };
-        console.log('req.body.username: ' + req.body.username);
+        if (!info) {
+            console.log('req.body.username: ' + req.body.username);
+            res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(req.body.username));
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        let x = JSON.stringify(req.body.username);
-        console.log('Sent to frontend: ' + req.body.username);
-        res.write(x);
-        res.end();
+        }
+        else {
+            res.status(401).header('Access-Control-Allow-Credentials', true).send({ message: 'invalid logins' });
+            res.header("Access-Control-Allow-Credentials", "localhost:3000/SignIn");
 
-
-
+            console.log(info);
+        }
     })(req, res, next);
-
+    //res.status().send({message: ''});
 
 });
 
 passport.use(new LocalStrategy(
     async (username, password, done) => {
-
         let credentials;
-        try {
-            credentials = await validateCredentials(username, password);
 
-        }
-        catch (e) {
-            console.log(e);
-        }
+        credentials = await validateCredentials(username, password);
 
         console.log('Credentials valid?  ' + credentials);
 
@@ -143,6 +144,7 @@ passport.use(new LocalStrategy(
             return done(null, username);
         }
         else {
+            console.log('invalid!')
             return done(null, false, { message: 'Incorrect password' });
         }
     }
@@ -150,7 +152,8 @@ passport.use(new LocalStrategy(
 ));
 
 passport.serializeUser((username, done) => {
-    done(null, username);
+    console.log('Serialized: ' + username);
+    return done(null, username);
 });
 
 passport.deserializeUser((username, done) => {

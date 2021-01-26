@@ -53,6 +53,10 @@ const SignIn = () => {
     let history = useHistory(); // react router hook to navigate back to home
     const classes = useStyles();
 
+    if (Cookies.get('username')) {
+        console.log('Cookie: ' + Cookies.get('username'));
+        history.push('/');
+    }
     const handleClick = (e) => {
         e.preventDefault();
         history.push('/');
@@ -72,6 +76,7 @@ const SignIn = () => {
             if (res.status === 200) {
                 res.json().then((res) => Cookies.set('username', res));
                 console.log('logged in');
+                history.push('/');
             }
             else if (res.status === 401) {
                 console.log('invalid login');
@@ -81,11 +86,7 @@ const SignIn = () => {
         console.log(Cookies.get('username'))
 
     }
-    useEffect(() => {
-        if (response === obj.username) {
-            console.log('logging in');
-        }
-    })
+
     const handleUsername = (e) => {
         setUsername(e.target.value);
     }
