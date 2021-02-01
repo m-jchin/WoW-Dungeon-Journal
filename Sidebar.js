@@ -99,6 +99,8 @@ export default function Sidebar({ children, dungeonName, cookie, userFavoriteDun
         e.preventDefault();
         deleteFavorite(userAndDungeon)
         setIfExists(false);
+        let index = userFavoriteDungeons.indexOf(dungeonName);
+        userFavoriteDungeons.splice(index, 1);
     }
 
     const addDungeon = (e) => {
