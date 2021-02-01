@@ -1,0 +1,120 @@
+
+#container{
+    display: flex;
+    flex-direction: column;
+    background-color:rgb(46, 45, 45); 
+}
+
+#menuRoot{
+    height: 75px;
+    background-color:rgb(46, 45, 45); 
+    box-shadow: 0px 0px;
+    border-bottom: 1px solid grey;
+}
+.menuBarSearch{
+    display: flex;
+    flex-direction: row;
+    height: 75px;
+    justify-content: space-between;
+    background-color: rgb(46, 45, 45);
+
+
+}
+
+
+.sidebarAndBossInfo{
+    display: flex;
+    flex-direction: row;
+}
+.bossIntroAndInfo{
+    margin-left: 255px;
+    margin-top: 60px;
+    width: 100%;
+}
+.Sidebar{
+
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: center;
+ 
+    height: 20px;
+    background: none!important;
+    border: none;
+    padding: 0!important;
+  
+    width: 20%;
+    
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+    
+}
+
+
+
+#selectBossIntro{
+    display: flex;
+    justify-content: center;
+}
+
+.enterDungeonText{
+    display: flex;
+    justify-content: center;
+}
+
+#enterValidInstance{
+    display: flex;
+    justify-content: center;
+    color: red;
+    margin-top: 100px;
+}
+
+
+#loginRegister{
+    display: flex;
+    justify-content: flex-end;
+  
+    width: 12%;
+    flex: 1;
+}
+#appTitle{
+    display: flex;
+    flex: 1;
+    color: rgb(242, 242, 242);
+    background:none;
+    border:none; 
+    outline: none;
+    cursor: pointer;
+
+}
+
+#dungeonFormDiv{
+    display: flex;
+    justify-content: center;
+    flex: 2;
+}
+
+
+
+#rootDiv{
+    background-size:contain;
+    
+}
+#selectBossIntro{
+    background-size: contain;
+    height: 100vh;
+    color: white;
+    margin-left: 20px;
+    margin-top: 85px;
+    
+}
+html,body{
+    margin:0;
+}
+
