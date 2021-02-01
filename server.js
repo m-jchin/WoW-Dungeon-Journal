@@ -85,9 +85,14 @@ const getFavorites = async (username) => {
         let cursor = await db.collection('favorites').findOne({    // findOne returns a Cursor obj
             username: username
         });
+        if (cursor) {
+            console.log('cursor: ' + cursor.favorites);
+            return cursor.favorites;
+        }
+        else {
+            return null;
+        }
 
-        console.log('cursor: ' + cursor.favorites);
-        return cursor.favorites;
 
     }
     catch (e) {
@@ -129,6 +134,8 @@ const deleteFavorite = async (username, dungeon) => {
     client.close();
 }
 
+
+
 const pushToDB = async (user, pw) => {
     let hash = '22';
     bcrypt.hash(pw, saltRounds).then((res) => {
@@ -159,16 +166,37 @@ const pushToDB = async (user, pw) => {
     client.close();
 }
 
+const createFavorites = async (username) => {
+    const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    // specify the DB's name
+    const db = client.db('dungeonJournal');
+    const userFavorites = await db.collection('favorites').insertOne({
+        username: username,
+        favorites: [],
+    });
+
+    client.close();
+}
+
 app.get('/', (req, res) => {
     res.send('Server Online');
 });
+
 
 app.post('/favorites', async (req, res) => {
     console.log(req.body.cookie)
     let username = req.body.cookie
     let favorites = await getFavorites(username);
-    console.log('!!!!' + favorites);
-    res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(favorites));
+    if (favorites) {
+        console.log('!!!!' + favorites);
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(favorites));
+    }
+
+
 });
 
 app.post('/AddFavorite', async (req, res) => {
@@ -176,6 +204,7 @@ app.post('/AddFavorite', async (req, res) => {
     console.log(req.body.dungeon);
     let username = req.body.username;
     let dungeon = req.body.dungeon;
+
     addFavorite(username, dungeon);
     let fav = await getFavorites(username);
     res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
@@ -255,6 +284,8 @@ app.post('/RegisterForm', function (req, res) {
 
     // send user/pw to db
     pushToDB(username, password);
+    createFavorites(username);
+
 
 });
 

@@ -9,17 +9,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-/*   buttons: {
-        color: 'rgb(242, 242, 242)',
-        height: '40px',
-        marginLeft: '2px',
-        borderRadius: '5px',
-        border: '2px solid rgb(67, 63, 63)',
-        backgroundColor: 'rgb(187, 34, 17)',
-    },
-    
-    */
+
+
 const useStyles = makeStyles((theme) => ({
     sidebarButton: {
         color: 'rgb(242, 242, 242)',
@@ -94,12 +87,11 @@ const useFetchWithBossID = (bossID, apiKey, setBossIsLoaded) => {
 }
 
 
-function GenerateInfo({ cookie, favorites, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage, setFavorites }) {
+function GenerateInfo({ setCookie, cookie, favorites, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage, setFavorites }) {
     const [dungeonIsLoaded, setDungeonIsLoaded] = useState(false);
     const [clickedBoss, setClickedBoss] = useState();
     const [bossIsLoaded, setBossIsLoaded] = useState(false);
     const classes = useStyles();
-    let isFavorited = false;
     let dungeonName;
     let sideBarNames = [];
     let arrayOfAllBosses = [];
@@ -110,21 +102,6 @@ function GenerateInfo({ cookie, favorites, apiKey, dungeon, setSearched, setDung
     let loaded = 'true';
 
     dungeonJSON = useFetchDungeonJSON(dungeon, apiKey, setDungeonIsLoaded);
-
-
-    if (cookie) { // if user logged in, show favorite-stars
-        if (favorites.includes(dungeon.replace('%20', ' ').toLowerCase())) { // if dungeon is already favorited, display gold star with delete-dungeon onClick
-            isFavorited = true;
-        }
-    }
-
-
-    //console.log(dungeonJSON);
-    console.log(dungeon.replace('%20', ' '));
-    console.log(favorites);
-
-    /* let x = favorites.includes(dungeon.replace('%20', ' '));
-     console.log(x); */
 
 
     if (dungeonJSON && dungeonJSON['results'].length !== 0) {
@@ -171,6 +148,12 @@ function GenerateInfo({ cookie, favorites, apiKey, dungeon, setSearched, setDung
         setSearched(false);
     }
 
+    const handleClick = (e) => {
+        e.preventDefault();
+        Cookies.remove('username');
+        setCookie(null);
+    };
+
     if (dungeonJSON && dungeonJSON['results'].length === 0) {
         return (
             <div>
@@ -191,16 +174,22 @@ function GenerateInfo({ cookie, favorites, apiKey, dungeon, setSearched, setDung
                         <div id='dungeonFormDiv'>
                             <DungeonForm size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
                         </div>
-                        <div id='loginRegister'>
+
+                        {!cookie && <div id='loginRegister'>
                             <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>
                             <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>
                         </div>
+                        }
+                        {cookie && <div id='logout'>
+                            <button onClick={(e) => handleClick(e)}>Log Out</button>
+                        </div>}
+
                     </Toolbar>
                 </AppBar>
 
                 <div className='sidebarAndBossInfo'>
                     {dungeonIsLoaded === true &&
-                        <Sidebar className='Sidebar' setFavorites={setFavorites} isFavorited={isFavorited} cookie={cookie} width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
+                        <Sidebar className='Sidebar' cookie={cookie} width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
                             {sideBarNames}
                         </Sidebar>
                     }

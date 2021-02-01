@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 //{isFavorited === null && <h1 id='dungeonNameSidebar'>{dungeonName}</h1>}
-export default function Sidebar({ children, dungeonName, cookie, isFavorited, setFavorites }) {
+export default function Sidebar({ children, dungeonName, cookie, isFavorited, favorites, setFavorites, setIsFavorited }) {
     const classes = useStyles();
 
     console.log(children);
@@ -37,10 +37,12 @@ export default function Sidebar({ children, dungeonName, cookie, isFavorited, se
 
     return (
         <div className='sidebarDiv'>
-            <div className='favoriteDiv'>
-                {cookie && <FavoriteStar setFavorites={setFavorites} cookie={cookie} isFavorited={isFavorited} dungeonName={dungeonName} />}
-                <h1 id='dungeonNameSidebar'>{dungeonName}</h1>
-            </div>
+            {cookie &&
+                <div className='starAndName'>
+                    <FavoriteStar setFavorites={setFavorites} favorites={favorites} setIsFavorited={setIsFavorited} cookie={cookie} isFavorited={isFavorited} dungeonName={dungeonName} />
+                    <h1 id='dungeonNameSidebar'>{dungeonName}</h1>
+                </div>}
+            {!cookie && <h1 className='dungeonNameNoStar'>{dungeonName}</h1>}
 
             {<ol className={classes.list}>
                 {children.map((text, index) => (

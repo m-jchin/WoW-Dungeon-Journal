@@ -35,38 +35,6 @@ const useFetch = (id, secret, setCookie) => {
     return data
 }
 
-const useFavorites = (cookie, setFavorites) => {
-    let cookieObj = {
-        'cookie': cookie,
-    }
-
-    const getFavorites = async (cookieObj, cookie) => {
-        console.log(JSON.stringify(cookie));
-        if (cookie) {
-            let favorites = await fetch('http://localhost:8080/favorites', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(cookieObj)
-            })
-
-            console.log(favorites)
-            return favorites.json();
-        }
-        else {
-            return null;
-        }
-    }
-
-    useEffect(() => {
-        getFavorites(cookieObj, cookie).then((res) => setFavorites(res));
-    }, [cookie]); // run only if cookie changes
-
-
-
-}
 
 function HomePage() {
     let id = CONFIG.id;
@@ -77,14 +45,8 @@ function HomePage() {
     const [dungeon, setDungeon] = useState();
     const [selectionMessage, setSelectionMessage] = useState(false);
     const apiKey = useFetch(id, secret, setCookie);
-    // const [favorites, setFavorites] = useState();
-    const [favorites, setFavorites] = useState();
-    useFavorites(cookie, setFavorites);
-    //let favorites = useFavorites(cookie);
-    console.log(favorites);
 
-    //let cookie = Cookies.get('username');
-    //{ searched && <GenerateInfo dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
+
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -92,7 +54,7 @@ function HomePage() {
         setCookie(null);
     };
 
-    console.log(cookie);
+    //console.log(cookie);
 
     return (
         <div className='homePageDiv'>
@@ -111,7 +73,7 @@ function HomePage() {
             </div>
 
 
-            { searched && <GenerateInfo setFavorites={setFavorites} cookie={cookie} favorites={favorites} dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
+            { searched && <GenerateInfo cookie={cookie} setCookie={setCookie} dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
 
         </div >
     );
