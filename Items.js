@@ -27,7 +27,7 @@ const Items = ({ items, apiKey }) => {
             .then(res => setData(res)); //end promise all
 
 
-    }, [items]) // reload every 'items' change
+    }, [apiKey, items]) // reload every 'items' change
 
     console.log(data);
     let itemImages

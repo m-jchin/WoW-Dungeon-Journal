@@ -8,8 +8,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 
-
+/*   buttons: {
+        color: 'rgb(242, 242, 242)',
+        height: '40px',
+        marginLeft: '2px',
+        borderRadius: '5px',
+        border: '2px solid rgb(67, 63, 63)',
+        backgroundColor: 'rgb(187, 34, 17)',
+    },
+    
+    */
 const useStyles = makeStyles((theme) => ({
     sidebarButton: {
         color: 'rgb(242, 242, 242)',
@@ -18,14 +28,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-start',
         textTransform: 'none',
     },
-    buttons: {
-        color: 'rgb(242, 242, 242)',
-        height: '40px',
-        marginLeft: '2px',
-        borderRadius: '5px',
-        border: '2px solid rgb(67, 63, 63)',
-        backgroundColor: 'rgb(187, 34, 17)',
-    },
+
 }));
 
 // custom hook to make AJAX call the entire dungeon API json
@@ -91,12 +94,12 @@ const useFetchWithBossID = (bossID, apiKey, setBossIsLoaded) => {
 }
 
 
-function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage }) {
+function GenerateInfo({ cookie, favorites, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage, setFavorites }) {
     const [dungeonIsLoaded, setDungeonIsLoaded] = useState(false);
     const [clickedBoss, setClickedBoss] = useState();
     const [bossIsLoaded, setBossIsLoaded] = useState(false);
     const classes = useStyles();
-
+    let isFavorited = false;
     let dungeonName;
     let sideBarNames = [];
     let arrayOfAllBosses = [];
@@ -104,8 +107,25 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
     let bossPictureID = null;
     let clickedBossJSON;
     let dungeonJSON = null;
+    let loaded = 'true';
+
     dungeonJSON = useFetchDungeonJSON(dungeon, apiKey, setDungeonIsLoaded);
-    console.log(dungeonJSON);
+
+
+    if (cookie) { // if user logged in, show favorite-stars
+        if (favorites.includes(dungeon.replace('%20', ' ').toLowerCase())) { // if dungeon is already favorited, display gold star with delete-dungeon onClick
+            isFavorited = true;
+        }
+    }
+
+
+    //console.log(dungeonJSON);
+    console.log(dungeon.replace('%20', ' '));
+    console.log(favorites);
+
+    /* let x = favorites.includes(dungeon.replace('%20', ' '));
+     console.log(x); */
+
 
     if (dungeonJSON && dungeonJSON['results'].length !== 0) {
         // save each boss object to arrayOfAllBosses
@@ -115,6 +135,8 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
         }
 
         dungeonName = arrayOfAllBosses[0]['data']['instance']['name']['en_US'];
+        console.log('dungeon name: ' + dungeonName);
+        console.log('dungeon name: ' + dungeon);
 
         // setting boss names for sidebar
 
@@ -144,6 +166,10 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
 
     clickedBossJSON = useFetchWithBossID(bossID, apiKey, setBossIsLoaded);
     //console.log(clickedBossJSON);
+    const clickTitle = (e) => {
+        e.preventDefault();
+        setSearched(false);
+    }
 
     if (dungeonJSON && dungeonJSON['results'].length === 0) {
         return (
@@ -161,21 +187,20 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
             <div id='container'>
                 <AppBar id='menuRoot' position="fixed">
                     <Toolbar className='menuBarSearch'>
-                        <h2 id='appTitle'>Dungeon Journal</h2>
+                        <button id='appTitle' onClick={(e) => clickTitle(e)}>Dungeon Journal</button>
                         <div id='dungeonFormDiv'>
                             <DungeonForm size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
                         </div>
                         <div id='loginRegister'>
-                            <Button className={classes.buttons}>Register</Button>
-                            <Button className={classes.buttons}>Sign In</Button>
-
+                            <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>
+                            <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>
                         </div>
                     </Toolbar>
                 </AppBar>
 
                 <div className='sidebarAndBossInfo'>
                     {dungeonIsLoaded === true &&
-                        <Sidebar className='Sidebar' width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
+                        <Sidebar className='Sidebar' setFavorites={setFavorites} isFavorited={isFavorited} cookie={cookie} width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
                             {sideBarNames}
                         </Sidebar>
                     }
@@ -185,11 +210,15 @@ function GenerateInfo({ apiKey, dungeon, setSearched, setDungeon, searched, sele
                     </div>
 
                 </div>
-            </div>
+            </div >
 
         );
     }
 
+
 }
 
 export default GenerateInfo;
+
+
+// TODO: make dungeon favorited names toLower; 

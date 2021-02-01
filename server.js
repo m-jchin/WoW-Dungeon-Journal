@@ -51,7 +51,7 @@ const validateCredentials = async (username, password) => {
     const db = await client.db('dungeonJournal');
 
     try {
-        let cursor = await db.collection('loginCredentials').findOne({
+        let cursor = await db.collection('loginCredentials').findOne({    // findOne returns a Cursor obj
             username: username
         });
 
@@ -60,9 +60,6 @@ const validateCredentials = async (username, password) => {
     catch (e) {
         console.log(e);
     }
-
-    // findOne returns a Cursor obj
-
 
     let isValid = await bcrypt.compare(password, pwHash);
     //console.log(isValid);
@@ -73,6 +70,63 @@ const validateCredentials = async (username, password) => {
     else {
         return false;
     }
+}
+
+const getFavorites = async (username) => {
+    console.log('cookie: ' + username)
+    const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    const db = await client.db('dungeonJournal');
+
+    try {
+        let cursor = await db.collection('favorites').findOne({    // findOne returns a Cursor obj
+            username: username
+        });
+
+        console.log('cursor: ' + cursor.favorites);
+        return cursor.favorites;
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+}
+
+const addFavorite = async (username, dungeon) => {
+    const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    const db = client.db('dungeonJournal');
+
+    const insertFavDungeon = await db.collection('favorites').updateOne(
+        { username: username },
+        { $push: { favorites: dungeon } }
+    );
+
+    console.log(insertFavDungeon);
+    client.close();
+}
+
+const deleteFavorite = async (username, dungeon) => {
+    const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    const db = client.db('dungeonJournal');
+
+    const removeDungeon = await db.collection('favorites').updateOne(
+        { username: username },
+        { $pull: { 'favorites': dungeon } }
+    );
+
+    console.log(removeDungeon);
+    client.close();
 }
 
 const pushToDB = async (user, pw) => {
@@ -108,6 +162,35 @@ const pushToDB = async (user, pw) => {
 app.get('/', (req, res) => {
     res.send('Server Online');
 });
+
+app.post('/favorites', async (req, res) => {
+    console.log(req.body.cookie)
+    let username = req.body.cookie
+    let favorites = await getFavorites(username);
+    console.log('!!!!' + favorites);
+    res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(favorites));
+});
+
+app.post('/AddFavorite', async (req, res) => {
+    console.log(req.body.username);
+    console.log(req.body.dungeon);
+    let username = req.body.username;
+    let dungeon = req.body.dungeon;
+    addFavorite(username, dungeon);
+    let fav = await getFavorites(username);
+    res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
+
+});
+
+app.delete('/DeleteFavorite', async (req, res) => {
+    let username = req.body.username;
+    let dungeon = req.body.dungeon;
+    deleteFavorite(username, dungeon);
+    let fav = await getFavorites(username);
+    console.log('favorites: ' + fav);
+    res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
+
+})
 
 app.post('/SignIn', (req, res, next) => {
     passport.authenticate('local', (e, user, info) => {
@@ -163,8 +246,6 @@ passport.deserializeUser((username, done) => {
 app.post('/RegisterForm', function (req, res) {
     let username = null;
     let password = null;
-
-    res.send('Received login credentials!');
 
     username = req.body.username;
     password = req.body.password;

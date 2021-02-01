@@ -1,6 +1,8 @@
 import "./sidebar.css"
 import React from 'react';
+import FavoriteStar from './FavoriteStar';
 import { makeStyles } from '@material-ui/core/styles';
+import { Favorite } from "@material-ui/icons";
 
 
 const drawerWidth = 250;
@@ -22,21 +24,30 @@ const useStyles = makeStyles((theme) => ({
 
     list: {
         color: 'red',
-    }
+    },
+
 }));
 
-
-export default function Sidebar({ children, dungeonName }) {
+//{isFavorited === null && <h1 id='dungeonNameSidebar'>{dungeonName}</h1>}
+export default function Sidebar({ children, dungeonName, cookie, isFavorited, setFavorites }) {
     const classes = useStyles();
+
     console.log(children);
+
+
     return (
         <div className='sidebarDiv'>
-            <h1 id='dungeonNameSidebar'>{dungeonName}</h1>
+            <div className='favoriteDiv'>
+                {cookie && <FavoriteStar setFavorites={setFavorites} cookie={cookie} isFavorited={isFavorited} dungeonName={dungeonName} />}
+                <h1 id='dungeonNameSidebar'>{dungeonName}</h1>
+            </div>
+
             {<ol className={classes.list}>
                 {children.map((text, index) => (
                     <li key={index} className='listItem'>{text}</li>
                 ))}
             </ol>}
+
 
         </div >
     );

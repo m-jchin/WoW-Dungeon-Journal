@@ -40,11 +40,10 @@ const ScrollToTop = () => {
         return function cleanup() {
             window.removeEventListener('scroll', hideBar);
         };
-    })
+    });
 
-    console.log(isHide);
     const classHide = isHide ? '' : 'hide';
-    console.log(classHide);
+
     return (
         <div className={classHide} >
             <IconButton aria-label="delete" className={classes.icon} size="small" onClick={(e) => handleSubmit(e)}>

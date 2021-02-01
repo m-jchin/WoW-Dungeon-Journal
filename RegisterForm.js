@@ -25,21 +25,24 @@ const useStyles = makeStyles({
 
 
 
-const RegisterForm = () => {
+const RegisterForm = ({ loaded }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     let history = useHistory(); // react router hook to navigate back to home
     const classes = useStyles();
 
+
     const handleClick = (e) => {
+
         e.preventDefault();
-        history.push('/');
+        history.goBack();
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(username)
         console.log(password);
+
         let obj = {
             'username': username,
             'password': password
@@ -54,7 +57,7 @@ const RegisterForm = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(obj)
-        });
+        }).then((res) => console.log(res));
 
         history.push('/');
     }
@@ -75,7 +78,7 @@ const RegisterForm = () => {
                 <Card className={classes.root} variant='outlined'>
                     <CardContent>
                         <form id='registerForm' onSubmit={(e) => handleSubmit(e)} >
-                            <h2 id='createAccount'>Create Account</h2>
+                            <h2 id='createAccount'>Sign Up</h2>
                             <label id='usernameLabel' htmlFor="username">Username:</label>
                             <input required id='username' type="text" value={username} onChange={(e) => handleUsername(e)} />
 
@@ -83,7 +86,7 @@ const RegisterForm = () => {
                             <input required type="text" id='password' value={password} onChange={(e) => handlePassword(e)} />
 
                             <div id='buttons'>
-                                <input id='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} />
+                                <input id='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} loaded={loaded} />
                                 <input id='signUpBtn' type="submit" value="Sign Up" />
                             </div>
 
