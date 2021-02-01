@@ -86,8 +86,35 @@ const useFetchWithBossID = (bossID, apiKey, setBossIsLoaded) => {
     return data
 }
 
+const useGetFavorites = (cookie) => {
+    const [favs, setFavs] = useState();
+    let cookieObj = {
+        'cookie': cookie,
+    }
 
-function GenerateInfo({ setCookie, cookie, favorites, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage, setFavorites }) {
+    const getFavorites = async (cookieObj, cookie) => {
+        let favorites;
+        favorites = await fetch('http://localhost:8080/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(cookieObj)
+        });
+
+        let fav = await favorites.json();
+        return fav
+    }
+
+    useEffect(() => {
+        getFavorites(cookieObj, cookie).then((res) => setFavs(res));
+    }, [cookie]); // run only if cookie changes
+
+    return favs;
+}
+
+function GenerateInfo({ setCookie, cookie, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage, setFavorites }) {
     const [dungeonIsLoaded, setDungeonIsLoaded] = useState(false);
     const [clickedBoss, setClickedBoss] = useState();
     const [bossIsLoaded, setBossIsLoaded] = useState(false);
@@ -100,7 +127,7 @@ function GenerateInfo({ setCookie, cookie, favorites, apiKey, dungeon, setSearch
     let clickedBossJSON;
     let dungeonJSON = null;
     let loaded = 'true';
-
+    let userFavoriteDungeons = useGetFavorites(cookie);
     dungeonJSON = useFetchDungeonJSON(dungeon, apiKey, setDungeonIsLoaded);
 
 
@@ -112,8 +139,8 @@ function GenerateInfo({ setCookie, cookie, favorites, apiKey, dungeon, setSearch
         }
 
         dungeonName = arrayOfAllBosses[0]['data']['instance']['name']['en_US'];
-        console.log('dungeon name: ' + dungeonName);
-        console.log('dungeon name: ' + dungeon);
+        //console.log('dungeon name: ' + dungeonName);
+        //console.log('dungeon name: ' + dungeon);
 
         // setting boss names for sidebar
 
@@ -189,7 +216,7 @@ function GenerateInfo({ setCookie, cookie, favorites, apiKey, dungeon, setSearch
 
                 <div className='sidebarAndBossInfo'>
                     {dungeonIsLoaded === true &&
-                        <Sidebar className='Sidebar' cookie={cookie} width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
+                        <Sidebar className='Sidebar' userFavoriteDungeons={userFavoriteDungeons} cookie={cookie} width={300} dungeonName={dungeonName} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage}>
                             {sideBarNames}
                         </Sidebar>
                     }

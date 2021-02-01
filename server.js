@@ -114,7 +114,7 @@ const addFavorite = async (username, dungeon) => {
         { $push: { favorites: dungeon } }
     );
 
-    console.log(insertFavDungeon);
+    // console.log(insertFavDungeon);
     client.close();
 }
 
@@ -130,7 +130,7 @@ const deleteFavorite = async (username, dungeon) => {
         { $pull: { 'favorites': dungeon } }
     );
 
-    console.log(removeDungeon);
+    // console.log(removeDungeon);
     client.close();
 }
 
@@ -160,7 +160,7 @@ const pushToDB = async (user, pw) => {
     });
 
     // loginCredentials.ops is the array in the result obj containing user/pw/id info
-    console.log(loginCredentials.ops);
+    //console.log(loginCredentials.ops);
 
     // close connection
     client.close();
@@ -200,14 +200,21 @@ app.post('/favorites', async (req, res) => {
 });
 
 app.post('/AddFavorite', async (req, res) => {
-    console.log(req.body.username);
-    console.log(req.body.dungeon);
+    //console.log(req.body.username);
+    //console.log(req.body.dungeon);
     let username = req.body.username;
     let dungeon = req.body.dungeon;
-
-    addFavorite(username, dungeon);
     let fav = await getFavorites(username);
-    res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
+    if (!fav.includes(dungeon)) {
+        addFavorite(username, dungeon);
+        let fav = await getFavorites(username);
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
+    }
+    else {
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
+
+    }
+
 
 });
 
