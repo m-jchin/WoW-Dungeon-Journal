@@ -5,7 +5,7 @@ import DungeonForm from './DungeonForm';
 import GenerateInfo from './GenerateInfo';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
+import Favorites from './Favorites';
 
 let CONFIG = require('./apikeys.json');
 
@@ -35,6 +35,34 @@ const useFetch = (id, secret, setCookie) => {
     return data
 }
 
+const useGetFavorites = (cookie) => {
+    const [favs, setFavs] = useState();
+    let cookieObj = {
+        'cookie': cookie,
+    }
+
+    const getFavorites = async (cookieObj, cookie) => {
+        let favorites;
+        favorites = await fetch('http://localhost:8080/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(cookieObj)
+        });
+
+        let fav = await favorites.json();
+        return fav
+    }
+
+    useEffect(() => {
+        getFavorites(cookieObj, cookie).then((res) => setFavs(res));
+    }, [cookie]); // run only if cookie changes
+
+    return favs;
+}
+
 
 function HomePage() {
     let id = CONFIG.id;
@@ -45,7 +73,10 @@ function HomePage() {
     const [dungeon, setDungeon] = useState();
     const [selectionMessage, setSelectionMessage] = useState(false);
     const apiKey = useFetch(id, secret, setCookie);
+    const [showHomePage, setShowHomePage] = useState(true);
 
+    let userFavoriteDungeons = useGetFavorites(cookie);
+    console.log(userFavoriteDungeons);
 
 
     const handleClick = (e) => {
@@ -54,28 +85,39 @@ function HomePage() {
         setCookie(null);
     };
 
+    const showFavorites = (e) => {
+        e.preventDefault();
+        setShowHomePage(false);
+    }
+
     //console.log(cookie);
 
     return (
-        <div className='homePageDiv'>
-            <div className='searchAndLoginButtons'>
-                {!searched &&
-                    <span id='formPanel'>
-                        <h1 id='title'>Dungeon Journal</h1>
-                        <DungeonForm apiKey={apiKey} setSearched={setSearched} searched={searched} setDungeon={setDungeon} dungeon={dungeon} size={'75'} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />
-                    </span>}
+        <div>
+            { showHomePage && <div className='homePageDiv'>
+                <div className='searchAndLoginButtons'>
+                    {!searched &&
+                        <span id='formPanel'>
+                            <h1 id='title'>Dungeon Journal</h1>
+                            <DungeonForm apiKey={apiKey} setSearched={setSearched} searched={searched} setDungeon={setDungeon} dungeon={dungeon} size={'75'} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />
+                        </span>}
 
-                {!searched && <div className='registerAndSignIn'>
-                    <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>
-                    <div className='divider'></div>
-                    {cookie ? <button onClick={(e) => handleClick(e)}>Log Out</button> : <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>}
-                </div >}
-            </div>
+                    {!searched && <div className='registerAndSignIn'>
+                        {cookie ? null : <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>}
+                        <div className='divider'></div>
+                        {cookie && <button onClick={(e) => showFavorites(e)}>Favorites</button>}
+                        {cookie ? <button onClick={(e) => handleClick(e)}>Log Out</button> : <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>}
+                    </div >}
+                </div>
+                {searched && <GenerateInfo setShowHomePage={setShowHomePage} userFavoriteDungeons={userFavoriteDungeons} cookie={cookie} setCookie={setCookie} dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
+            </div >}
 
+            {!showHomePage && <div className='homePageDiv'>
+                <Favorites setShowHomePage={setShowHomePage} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} userFavoriteDungeons={userFavoriteDungeons} />
+            </div>}
 
-            { searched && <GenerateInfo cookie={cookie} setCookie={setCookie} dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
+        </div>
 
-        </div >
     );
 
 }

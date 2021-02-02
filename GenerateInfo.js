@@ -10,7 +10,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
+import Favorites from './Favorites';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -86,35 +86,8 @@ const useFetchWithBossID = (bossID, apiKey, setBossIsLoaded) => {
     return data
 }
 
-const useGetFavorites = (cookie) => {
-    const [favs, setFavs] = useState();
-    let cookieObj = {
-        'cookie': cookie,
-    }
 
-    const getFavorites = async (cookieObj, cookie) => {
-        let favorites;
-        favorites = await fetch('http://localhost:8080/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify(cookieObj)
-        });
-
-        let fav = await favorites.json();
-        return fav
-    }
-
-    useEffect(() => {
-        getFavorites(cookieObj, cookie).then((res) => setFavs(res));
-    }, [cookie]); // run only if cookie changes
-
-    return favs;
-}
-
-function GenerateInfo({ setCookie, cookie, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage, setFavorites }) {
+function GenerateInfo({ setShowHomePage, userFavoriteDungeons, setCookie, cookie, apiKey, dungeon, setSearched, setDungeon, searched, selectionMessage, setSelectionMessage }) {
     const [dungeonIsLoaded, setDungeonIsLoaded] = useState(false);
     const [clickedBoss, setClickedBoss] = useState();
     const [bossIsLoaded, setBossIsLoaded] = useState(false);
@@ -127,7 +100,6 @@ function GenerateInfo({ setCookie, cookie, apiKey, dungeon, setSearched, setDung
     let clickedBossJSON;
     let dungeonJSON = null;
     let loaded = 'true';
-    let userFavoriteDungeons = useGetFavorites(cookie);
     dungeonJSON = useFetchDungeonJSON(dungeon, apiKey, setDungeonIsLoaded);
 
 
@@ -181,6 +153,11 @@ function GenerateInfo({ setCookie, cookie, apiKey, dungeon, setSearched, setDung
         setCookie(null);
     };
 
+    const showFavorites = (e) => {
+        e.preventDefault();
+        setShowHomePage(false);
+    }
+
     if (dungeonJSON && dungeonJSON['results'].length === 0) {
         return (
             <div>
@@ -208,6 +185,7 @@ function GenerateInfo({ setCookie, cookie, apiKey, dungeon, setSearched, setDung
                         </div>
                         }
                         {cookie && <div id='logout'>
+                            <button onClick={(e) => showFavorites(e)}>Favorites</button>
                             <button onClick={(e) => handleClick(e)}>Log Out</button>
                         </div>}
 

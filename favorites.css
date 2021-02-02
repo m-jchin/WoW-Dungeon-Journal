@@ -1,0 +1,31 @@
+.favoriteDungeonsMenu{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.favoritesTitle{
+    margin-top: 25vh;
+    color:  rgb(242, 242, 242);
+}
+.listOfFavorites{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self:center;
+    flex-direction: column;
+    text-align: center;
+    padding: 0;
+}
+.favoriteListItem{
+    color:  rgb(242, 242, 242);
+    list-style-type: none;
+    margin-bottom: 20px;
+    background:none;
+    border:none;
+ 
+    padding:0;
+    cursor: pointer;
+
+}

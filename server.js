@@ -154,16 +154,30 @@ const pushToDB = async (user, pw) => {
 
     // insert
     console.log('INSERT HASH: ' + hash);
-    const loginCredentials = await db.collection('loginCredentials').insertOne({
-        username: user,
-        password: hash
+    let checkIfUserExists = await db.collection('loginCredentials').findOne({
+        username: user
     });
+
+    if (checkIfUserExists) {
+        client.close();
+        return false;
+    }
+    else {
+        const loginCredentials = await db.collection('loginCredentials').insertOne({
+            username: user,
+            password: hash
+        });
+
+        client.close();
+        return true;
+    }
+
 
     // loginCredentials.ops is the array in the result obj containing user/pw/id info
     //console.log(loginCredentials.ops);
 
     // close connection
-    client.close();
+
 }
 
 const createFavorites = async (username) => {
@@ -279,7 +293,7 @@ passport.deserializeUser((username, done) => {
     return done(null, username);
 });
 
-app.post('/RegisterForm', function (req, res) {
+app.post('/RegisterForm', async function (req, res) {
     let username = null;
     let password = null;
 
@@ -290,8 +304,17 @@ app.post('/RegisterForm', function (req, res) {
     console.log(password);
 
     // send user/pw to db
-    pushToDB(username, password);
-    createFavorites(username);
+    let validLogin = await pushToDB(username, password);
+    console.log('did it work: ' + validLogin);
+    if (validLogin === true) {
+        createFavorites(username);
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(true));
+    }
+    else {
+        console.log('username taken!');
+        // console.log(JSON.stringify(false));
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(false));
+    }
 
 
 });
