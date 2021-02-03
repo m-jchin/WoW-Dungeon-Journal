@@ -48,7 +48,6 @@ const login = async (obj) => {
 const SignIn = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [response, setResponse] = useState(null);
 
     let history = useHistory(); // react router hook to navigate back to home
     const classes = useStyles();
@@ -95,22 +94,22 @@ const SignIn = () => {
         setPassword(e.target.value);
     }
     return (
-        <div id='formDiv'>
-            <h1 id='title'>Dungeon Journal</h1>
-            <div id='cardDiv'>
+        <div className='formDiv'>
+            <h1 className='formTitle'>Dungeon Journal</h1>
+            <div className='cardDiv'>
                 <Card className={classes.root} variant='outlined'>
                     <CardContent>
-                        <form id='registerForm' onSubmit={(e) => handleSubmit(e)} >
-                            <h2 id='createAccount'>Sign In</h2>
-                            <label id='usernameLabel' htmlFor="username">Username:</label>
-                            <input required id='username' type="text" value={username} onChange={(e) => handleUsername(e)} />
+                        <form className='registerForm' onSubmit={(e) => handleSubmit(e)} >
+                            <h2 className='signUpHeader'>Sign In</h2>
+                            <label className='usernameLabel' htmlFor="username">Username:</label>
+                            <input required className='username' type="text" value={username} onChange={(e) => handleUsername(e)} />
 
-                            <label id='passwordLabel' htmlFor="username">Password:</label>
-                            <input required type="text" id='password' value={password} onChange={(e) => handlePassword(e)} />
+                            <label className='passwordLabel' htmlFor="username">Password:</label>
+                            <input required type="text" className='password' value={password} onChange={(e) => handlePassword(e)} />
 
-                            <div id='buttons'>
-                                <input id='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} />
-                                <input id='signUpBtn' type="submit" value="Sign In" />
+                            <div className='backSignUpBtns'>
+                                <input className='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} />
+                                <input className='signUpBtn' type="submit" value="Sign In" />
                             </div>
 
                         </form>

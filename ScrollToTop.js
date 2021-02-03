@@ -6,12 +6,11 @@ import IconButton from '@material-ui/core/IconButton';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     icon: {
         color: '#FFFFFF',
     },
 }));
-
 
 const ScrollToTop = () => {
     const classes = useStyles();

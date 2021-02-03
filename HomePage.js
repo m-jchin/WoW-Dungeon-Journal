@@ -79,7 +79,7 @@ function HomePage() {
     console.log(userFavoriteDungeons);
 
 
-    const handleClick = (e) => {
+    const handleLogout = (e) => {
         e.preventDefault();
         Cookies.remove('username');
         setCookie(null);
@@ -90,25 +90,21 @@ function HomePage() {
         setShowHomePage(false);
     }
 
-    //console.log(cookie);
-
     return (
         <div>
             { showHomePage && <div className='homePageDiv'>
-                <div className='searchAndLoginButtons'>
-                    {!searched &&
-                        <span id='formPanel'>
-                            <h1 id='title'>Dungeon Journal</h1>
-                            <DungeonForm apiKey={apiKey} setSearched={setSearched} searched={searched} setDungeon={setDungeon} dungeon={dungeon} size={'75'} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />
-                        </span>}
+                {!searched &&
+                    <span className='formPanel'>
+                        <h1 className='homePageTitle'>Dungeon Journal</h1>
+                        <DungeonForm apiKey={apiKey} setSearched={setSearched} searched={searched} setDungeon={setDungeon} dungeon={dungeon} size={'75'} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />
+                    </span>}
 
-                    {!searched && <div className='registerAndSignIn'>
-                        {cookie ? null : <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>}
-                        <div className='divider'></div>
-                        {cookie && <button onClick={(e) => showFavorites(e)}>Favorites</button>}
-                        {cookie ? <button onClick={(e) => handleClick(e)}>Log Out</button> : <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>}
-                    </div >}
-                </div>
+                {!searched && <div className='registerAndSignIn'>
+                    {cookie ? null : <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>}
+                    <div className='divider'></div>
+                    {cookie && <button className='registerButton' onClick={(e) => showFavorites(e)}>Favorites</button>}
+                    {cookie ? <button className='registerButton' onClick={(e) => handleLogout(e)}>Log Out</button> : <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>}
+                </div >}
                 {searched && <GenerateInfo setShowHomePage={setShowHomePage} userFavoriteDungeons={userFavoriteDungeons} cookie={cookie} setCookie={setCookie} dungeon={dungeon} apiKey={apiKey} searched={searched} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} selectionMessage={selectionMessage} />}
             </div >}
 

@@ -4,7 +4,6 @@ import './bossabilities.css';
 const BossAbilities = ({ abilities }) => {
     if (!abilities) return null;
 
-    // console.log(abilities);
     let sections = abilities.map(ability => {
         if (ability['sections']) { // for subsections
             return (
@@ -27,16 +26,13 @@ const BossAbilities = ({ abilities }) => {
                 <div >
                     <h2 className='setColor'>{ability['title']}</h2>
                     <span className='setColor'>{ability['body_text']}</span>
-
                 </div>
             )
         }
     });
 
     return (
-
         <div>{sections}</div>
-
     );
 }
 

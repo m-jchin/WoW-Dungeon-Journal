@@ -10,10 +10,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import Favorites from './Favorites';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     sidebarButton: {
         color: 'rgb(242, 242, 242)',
         fontSize: '12px',
@@ -21,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-start',
         textTransform: 'none',
     },
-
 }));
 
 // custom hook to make AJAX call the entire dungeon API json
@@ -30,17 +28,14 @@ const useFetchDungeonJSON = (dungeon, apiKey, setDungeonIsLoaded) => {
 
     async function getDungeonJSON(dungeon, apiKey) {
         let callAPI = 'https://us.api.blizzard.com/data/wow/search/journal-encounter?namespace=static-us&locale=en_US&instance.name.en_US=' + dungeon + '&orderby=id&_page=1&access_token=' + apiKey
-        //console.log(callAPI);
         let response = await fetch(callAPI, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
-        // console.log(response);
         let json = response.json();
         return json
-
     }
 
     useEffect(() => {
@@ -50,9 +45,7 @@ const useFetchDungeonJSON = (dungeon, apiKey, setDungeonIsLoaded) => {
         });
     }, [apiKey, dungeon, setDungeonIsLoaded]);
 
-
     return data
-
 }
 
 const useFetchWithBossID = (bossID, apiKey, setBossIsLoaded) => {
@@ -78,7 +71,6 @@ const useFetchWithBossID = (bossID, apiKey, setBossIsLoaded) => {
             console.log(error);
         });
     }, [bossID, apiKey, setData, setBossIsLoaded]);
-
 
     if (bossID === null) {
         return null;
@@ -111,11 +103,9 @@ function GenerateInfo({ setShowHomePage, userFavoriteDungeons, setCookie, cookie
         }
 
         dungeonName = arrayOfAllBosses[0]['data']['instance']['name']['en_US'];
-        //console.log('dungeon name: ' + dungeonName);
-        //console.log('dungeon name: ' + dungeon);
+
 
         // setting boss names for sidebar
-
         for (let i = 0; i < arrayOfAllBosses.length; i++) {
             sideBarNames.push(arrayOfAllBosses[i]['data']['name']['en_US'])
         };
@@ -135,13 +125,12 @@ function GenerateInfo({ setShowHomePage, userFavoriteDungeons, setCookie, cookie
 
         if (boss[0]) {
             bossID = boss[0]['data']['id'];
-            //console.log(bossID);
             bossPictureID = boss[0]['data']['creatures'][0]['creature_display']['id']
         }
     }
 
     clickedBossJSON = useFetchWithBossID(bossID, apiKey, setBossIsLoaded);
-    //console.log(clickedBossJSON);
+
     const clickTitle = (e) => {
         e.preventDefault();
         setSearched(false);
@@ -160,33 +149,37 @@ function GenerateInfo({ setShowHomePage, userFavoriteDungeons, setCookie, cookie
 
     if (dungeonJSON && dungeonJSON['results'].length === 0) {
         return (
-            <div>
-                <div className='enterDungeonText'><h1>Dungeon Journal</h1></div>
+            <div className='invalidDungeonDiv'>
+                <div className='invalidDungeonTitle'><h1>Dungeon Journal</h1></div>
                 <DungeonForm setSearched={setSearched} setDungeon={setDungeon} size={'75'} setSelectionMessage={setSelectionMessage} />
-                <h1 id='enterValidInstance'>Please enter a valid instance name!</h1>
+                <div className='registerAndSignIn'>
+                    {cookie ? null : <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>}
+                    <div className='divider'></div>
+                    {cookie && <button onClick={(e) => showFavorites(e)}>Favorites</button>}
+                    {cookie ? <button onClick={(e) => handleClick(e)}>Log Out</button> : <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>}
+                </div >
+                <h1 className='enterValidInstance'>Please enter a valid instance name!</h1>
             </div>
-
-
         );
     }
     else {
         return (
-            <div id='container'>
-                <AppBar id='menuRoot' position="fixed">
+            <div className='container'>
+                <AppBar className='menuRoot' position="fixed">
                     <Toolbar className='menuBarSearch'>
-                        <button id='appTitle' onClick={(e) => clickTitle(e)}>Dungeon Journal</button>
-                        <div id='dungeonFormDiv'>
+                        <button className='appTitle' onClick={(e) => clickTitle(e)}>Dungeon Journal</button>
+                        <div className='dungeonFormDiv'>
                             <DungeonForm size={'20'} setSearched={setSearched} setDungeon={setDungeon} setSelectionMessage={setSelectionMessage} />
                         </div>
 
-                        {!cookie && <div id='loginRegister'>
+                        {!cookie && <div className='loginRegister'>
                             <Link loaded={loaded} className='registerButton' to='/RegisterForm'>Register</Link>
                             <Link loaded={loaded} className='registerButton' to='/SignIn'>Sign In</Link>
                         </div>
                         }
-                        {cookie && <div id='logout'>
-                            <button onClick={(e) => showFavorites(e)}>Favorites</button>
-                            <button onClick={(e) => handleClick(e)}>Log Out</button>
+                        {cookie && <div className='favoriteLogoutButtons'>
+                            <button className='registerButton' onClick={(e) => showFavorites(e)}>Favorites</button>
+                            <button className='registerButton' onClick={(e) => handleClick(e)}>Log Out</button>
                         </div>}
 
                     </Toolbar>
@@ -199,20 +192,13 @@ function GenerateInfo({ setShowHomePage, userFavoriteDungeons, setCookie, cookie
                         </Sidebar>
                     }
                     <div className='bossIntroAndInfo'>
-                        {selectionMessage && dungeonJSON && <div id='selectBossIntro'><h1>Please select a boss</h1></div>}
+                        {selectionMessage && dungeonJSON && <div className='selectBossIntro'><h1>Please select a boss</h1></div>}
                         {clickedBossJSON !== null && !selectionMessage && <DisplayBossInfo clickedBossJSON={clickedBossJSON} bossIsLoaded={bossIsLoaded} bossID={bossID} bossPictureID={bossPictureID} apiKey={apiKey} />}
                     </div>
-
                 </div>
             </div >
-
         );
     }
-
-
 }
 
 export default GenerateInfo;
-
-
-// TODO: make dungeon favorited names toLower; 

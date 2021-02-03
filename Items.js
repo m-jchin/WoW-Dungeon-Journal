@@ -5,8 +5,6 @@ import './items.css';
 const Items = ({ items, apiKey }) => {
     const [data, setData] = useState(null);
 
-    console.log(items);
-
     useEffect(() => {
         let itemIDs = [];
         for (let i = 0; i < items.length; i++) {
@@ -25,7 +23,6 @@ const Items = ({ items, apiKey }) => {
         }))
             .then(res => res)
             .then(res => setData(res)); //end promise all
-
 
     }, [apiKey, items]) // reload every 'items' change
 

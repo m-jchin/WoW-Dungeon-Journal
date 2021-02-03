@@ -6,7 +6,6 @@ import './dungeonform.css';
 const DungeonForm = ({ setSearched, setDungeon, size, setSelectionMessage }) => {
     const [query, setQuery] = useState('');
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
         setSearched(true);
@@ -20,7 +19,7 @@ const DungeonForm = ({ setSearched, setDungeon, size, setSelectionMessage }) => 
     }
 
     return (
-        <form className='form' onSubmit={(e) => handleSubmit(e)} >
+        <form className='searchDungeonForm' onSubmit={(e) => handleSubmit(e)} >
             <input required className='searchField' placeholder='Enter instance name..' type="text" value={query} size={size} onChange={(e) => handleType(e)} />
             <input className='searchButton' type="submit" value="Search" />
         </form>

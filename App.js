@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-
 import RegisterForm from './RegisterForm';
 import HomePage from './HomePage';
 import SignIn from './SignIn';
@@ -9,8 +8,6 @@ let CONFIG = require('./apikeys.json');
 
 
 function App() {
-
-
   return (
     <div>
       <BrowserRouter>
@@ -22,7 +19,7 @@ function App() {
       </BrowserRouter>
     </div >
   );
-
 }
-//<SignIn />
+
+
 export default App;

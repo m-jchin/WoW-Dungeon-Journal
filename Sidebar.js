@@ -22,41 +22,10 @@ const useStyles = makeStyles((theme) => ({
 
         textAlign: 'left',
     },
-
     list: {
         color: 'red',
     },
-
 }));
-
-
-const useGetFavorites = (cookie) => {
-    const [favs, setFavs] = useState();
-    let cookieObj = {
-        'cookie': cookie,
-    }
-
-    const getFavorites = async (cookieObj, cookie) => {
-        let favorites;
-        favorites = await fetch('http://localhost:8080/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify(cookieObj)
-        });
-
-        let fav = await favorites.json();
-        return fav
-    }
-
-    useEffect(() => {
-        getFavorites(cookieObj, cookie).then((res) => setFavs(res));
-    }, [cookie]); // run only if cookie changes
-
-    return favs;
-}
 
 const addFavorite = async (userAndDungeon) => {
     fetch('http://localhost:8080/AddFavorite', {
@@ -84,11 +53,7 @@ export default function Sidebar({ children, dungeonName, cookie, userFavoriteDun
     const classes = useStyles();
     console.log(userFavoriteDungeons);
 
-
-
     const [ifExists, setIfExists] = useState(false);
-
-
 
     let userAndDungeon = {
         'username': cookie,
@@ -100,7 +65,7 @@ export default function Sidebar({ children, dungeonName, cookie, userFavoriteDun
         deleteFavorite(userAndDungeon)
         setIfExists(false);
         let index = userFavoriteDungeons.indexOf(dungeonName);
-        userFavoriteDungeons.splice(index, 1);
+        userFavoriteDungeons = userFavoriteDungeons.splice(index, 1);
     }
 
     const addDungeon = (e) => {
@@ -119,7 +84,7 @@ export default function Sidebar({ children, dungeonName, cookie, userFavoriteDun
                 setIfExists(false);
             }
         }
-    })
+    }, [userFavoriteDungeons, dungeonName]);
 
     console.log(ifExists);
     return (
@@ -132,18 +97,14 @@ export default function Sidebar({ children, dungeonName, cookie, userFavoriteDun
                     {ifExists === false && <IconButton aria-label="delete" size="small" onClick={(e) => addDungeon(e)}>
                         <StarBorderIcon className='star' />
                     </IconButton>}
-                    <h1 id='dungeonNameSidebar'>{dungeonName}</h1>
+                    <h1 className='dungeonNameSidebar'>{dungeonName}</h1>
                 </div>}
-
-            {!cookie || !userFavoriteDungeons && <h1 className='dungeonNameNoStar'>{dungeonName}</h1>}
-
+            {!cookie && <h1 className='dungeonNameNoStar'>{dungeonName}</h1>}
             {<ol className={classes.list}>
                 {children.map((text, index) => (
                     <li key={index} className='listItem'>{text}</li>
                 ))}
             </ol>}
-
-
         </div >
     );
 }

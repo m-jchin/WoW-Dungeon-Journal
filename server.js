@@ -18,10 +18,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 // passport middleware
-
 app.use(passport.initialize());
 app.use(passport.session()); // persist login sessions 
-
 
 
 const isLoggedIn = (req, res, next) => {
@@ -142,7 +140,7 @@ const pushToDB = async (user, pw) => {
         hash = res;
         console.log('HASH!!!: ' + hash);
     });
-    // console.log(hash);
+
     // connect to your cluster
     const client = await MongoClient.connect(uri, {
         useNewUrlParser: true,
@@ -167,17 +165,10 @@ const pushToDB = async (user, pw) => {
             username: user,
             password: hash
         });
-
+        console.log(loginCredentials.ops);
         client.close();
         return true;
     }
-
-
-    // loginCredentials.ops is the array in the result obj containing user/pw/id info
-    //console.log(loginCredentials.ops);
-
-    // close connection
-
 }
 
 const createFavorites = async (username) => {
@@ -205,20 +196,18 @@ app.post('/favorites', async (req, res) => {
     console.log(req.body.cookie)
     let username = req.body.cookie
     let favorites = await getFavorites(username);
+
     if (favorites) {
         console.log('!!!!' + favorites);
         res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(favorites));
     }
-
-
 });
 
 app.post('/AddFavorite', async (req, res) => {
-    //console.log(req.body.username);
-    //console.log(req.body.dungeon);
     let username = req.body.username;
     let dungeon = req.body.dungeon;
     let fav = await getFavorites(username);
+
     if (!fav.includes(dungeon)) {
         addFavorite(username, dungeon);
         let fav = await getFavorites(username);
@@ -226,10 +215,7 @@ app.post('/AddFavorite', async (req, res) => {
     }
     else {
         res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
-
     }
-
-
 });
 
 app.delete('/DeleteFavorite', async (req, res) => {
@@ -239,7 +225,6 @@ app.delete('/DeleteFavorite', async (req, res) => {
     let fav = await getFavorites(username);
     console.log('favorites: ' + fav);
     res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(fav));
-
 })
 
 app.post('/SignIn', (req, res, next) => {
@@ -260,9 +245,31 @@ app.post('/SignIn', (req, res, next) => {
             console.log(info);
         }
     })(req, res, next);
-    //res.status().send({message: ''});
-
 });
+
+app.post('/RegisterForm', async function (req, res) {
+    let username = null;
+    let password = null;
+
+    username = req.body.username;
+    password = req.body.password;
+
+    // send user/pw to db
+    let validLogin = await pushToDB(username, password);
+    console.log('did it work: ' + validLogin);
+    if (validLogin === true) {
+        createFavorites(username);
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(true));
+    }
+    else {
+        console.log('username taken!');
+        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(false));
+    }
+});
+
+app.listen(port, () => {
+    console.log('Server started...');
+})
 
 passport.use(new LocalStrategy(
     async (username, password, done) => {
@@ -281,7 +288,6 @@ passport.use(new LocalStrategy(
             return done(null, false, { message: 'Incorrect password' });
         }
     }
-
 ));
 
 passport.serializeUser((username, done) => {
@@ -293,34 +299,6 @@ passport.deserializeUser((username, done) => {
     return done(null, username);
 });
 
-app.post('/RegisterForm', async function (req, res) {
-    let username = null;
-    let password = null;
 
-    username = req.body.username;
-    password = req.body.password;
-
-    console.log(username);
-    console.log(password);
-
-    // send user/pw to db
-    let validLogin = await pushToDB(username, password);
-    console.log('did it work: ' + validLogin);
-    if (validLogin === true) {
-        createFavorites(username);
-        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(true));
-    }
-    else {
-        console.log('username taken!');
-        // console.log(JSON.stringify(false));
-        res.status(200).header('Access-Control-Allow-Credentials', true).send(JSON.stringify(false));
-    }
-
-
-});
-
-app.listen(port, () => {
-    console.log('Server started...');
-})
 
 

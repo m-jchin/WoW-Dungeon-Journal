@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,16 +24,27 @@ const useStyles = makeStyles({
 });
 
 
+const doesUserExist = async (userObj, setIsValid) => {
+    let res = await fetch('http://localhost:8080/RegisterForm', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userObj)
+    }).then((response) => response.json()).then((response) => setIsValid(response));
+}
+
 
 const RegisterForm = ({ loaded }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isValid, setIsValid] = useState(null);
     let history = useHistory(); // react router hook to navigate back to home
     const classes = useStyles();
 
 
     const handleClick = (e) => {
-
         e.preventDefault();
         history.goBack();
     }
@@ -43,51 +54,50 @@ const RegisterForm = ({ loaded }) => {
         console.log(username)
         console.log(password);
 
-        let obj = {
+        let userObj = {
             'username': username,
             'password': password
         };
-
-
-        console.log(obj);
-        fetch('http://localhost:8080/RegisterForm', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then((res) => console.log(res));
-
-        history.push('/');
+        doesUserExist(userObj, setIsValid);
     }
 
     const handleUsername = (e) => {
+        e.preventDefault();
         setUsername(e.target.value);
     }
 
     const handlePassword = (e) => {
+        e.preventDefault();
         setPassword(e.target.value);
     }
 
+    useEffect(() => {
+        if (isValid === true) {
+            history.push('/')
+        }
+        else if (isValid === false) {
+            window.alert('Username taken. Please try again.')
+        }
+        setIsValid(null);
+    });
+
 
     return (
-        <div id='formDiv'>
-            <h1 id='title'>Dungeon Journal</h1>
-            <div id='cardDiv'>
+        <div className='formDiv'>
+            <h1 className='formTitle'>Dungeon Journal</h1>
+            <div className='cardDiv'>
                 <Card className={classes.root} variant='outlined'>
                     <CardContent>
-                        <form id='registerForm' onSubmit={(e) => handleSubmit(e)} >
-                            <h2 id='createAccount'>Sign Up</h2>
-                            <label id='usernameLabel' htmlFor="username">Username:</label>
-                            <input required id='username' type="text" value={username} onChange={(e) => handleUsername(e)} />
+                        <form className='registerForm' onSubmit={(e) => handleSubmit(e)} >
+                            <h2 className='signUpHeader'>Sign Up</h2>
+                            <label className='usernameLabel' htmlFor="username">Username:</label>
+                            <input required className='usernameInput' type="text" value={username} onChange={(e) => handleUsername(e)} />
+                            <label className='passwordLabel' htmlFor="username">Password:</label>
+                            <input required type="text" className='passwordInput' value={password} onChange={(e) => handlePassword(e)} />
 
-                            <label id='passwordLabel' htmlFor="username">Password:</label>
-                            <input required type="text" id='password' value={password} onChange={(e) => handlePassword(e)} />
-
-                            <div id='buttons'>
-                                <input id='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} loaded={loaded} />
-                                <input id='signUpBtn' type="submit" value="Sign Up" />
+                            <div className='backSignUpBtns'>
+                                <input className='backBtn' type='button' value='Back' onClick={(e) => handleClick(e)} loaded={loaded} />
+                                <input className='signUpBtn' type="submit" value="Sign Up" />
                             </div>
 
                         </form>

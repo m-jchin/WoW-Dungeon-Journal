@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import './favorites.css';
 
 
@@ -15,9 +14,8 @@ const Favorites = ({ setShowHomePage, userFavoriteDungeons, setSearched, setDung
         e.preventDefault();
         setSearched(true);
         setDungeon(text.replace(' ', '%20'));
-        setSelectionMessage(true)
-
-        setShowHomePage(true)
+        setSelectionMessage(true);
+        setShowHomePage(true);
     }
     return (
         <div className='favoriteDungeonsMenu'>
@@ -28,7 +26,6 @@ const Favorites = ({ setShowHomePage, userFavoriteDungeons, setSearched, setDung
                 ))}
             </ul>}
             <button onClick={(e) => goBack(e)}>Back</button>
-
         </div>
     );
 }

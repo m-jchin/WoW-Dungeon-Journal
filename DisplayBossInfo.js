@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import Description from './Description';
 import BossAbilities from './BossAbilities';
 import Items from './Items';
