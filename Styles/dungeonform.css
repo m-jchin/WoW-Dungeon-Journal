@@ -1,27 +1,11 @@
-#inputText{
-    text-align: right;
-}
-
-#dungeonForm{
-    display: flex;
-    justify-self: center;
-    flex-direction: row;
-}
-
-#title{
-    text-align:center;
-}
-
-.sideBar{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-self: center;
-}
-
-.form{
+.searchDungeonForm{
     margin-top: 10px;
 }
+
+.searchField:focus{
+    outline-width: 0;
+}
+
 
 .searchField{
     border-radius: 5px;
@@ -34,16 +18,6 @@
 
 }
 
-::placeholder {
-    color: rgb(80, 80, 80);
-}
-
-.searchField:focus{
-    outline-width: 0;
-}
-
-
-
 .searchButton{
     height: 40px;
     margin-left: 2px;
@@ -52,3 +26,15 @@
     background-color: rgb(187, 34, 17);
     color: rgb(242, 242, 242);
 }
+
+::placeholder {
+    color: rgb(80, 80, 80);
+}
+
+
+
+
+
+
+
+

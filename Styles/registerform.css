@@ -1,36 +1,53 @@
-#formDiv{
+.formDiv{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 50px;
-  
+    background-color:rgb(46, 45, 45); 
+    height: 100vh;
 }
 
-#registerForm{
+.formTitle{
+    display: flex;
+    justify-content: center;
+    color: rgb(242, 242, 242);
+    margin-top: 0;
+}
+
+.cardDiv{
+    display: flex;
+    justify-content: center;
+}
+
+.registerForm{
     display: flex; 
     flex-direction: column;
     justify-content: center;
 }
 
-#passwordLabel{
+.signUpHeader{
+    display: flex;
+    justify-content: center;
+}
+
+.passwordLabel{
     margin-top: 30px;
 }
 
-#usernameLabel{
+.usernameLabel{
     margin-top: 30px;
 }
 
-#buttons{
+.backSignUpBtns{
     display: flex;
     flex-direction: row;
 }
-#backBtn{
+.backBtn{
     display: flex;
     justify-content: center;
     margin-top: 20px;
     width: 50%;
 }
-#signUpBtn{
+.signUpBtn{
     display: flex;
     justify-content: center;
     margin-top: 20px;
@@ -38,19 +55,7 @@
     margin-left:10px;
 }
 
-#createAccount{
-    display: flex;
-    justify-content: center;
-}
 
-#title{
-    display: flex;
-    justify-content: center;
-}
 
-#cardDiv{
 
-    display: flex;
-    justify-content: center;
-}
 

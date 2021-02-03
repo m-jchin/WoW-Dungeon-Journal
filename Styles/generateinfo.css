@@ -1,11 +1,33 @@
+.invalidDungeonDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-#container{
+.invalidDungeonTitle{
+    color: rgb(242, 242, 242);
+    margin-top: 200px;
+}
+
+.registerAndSignIn{
+    margin-top:5px;
+}
+
+.enterValidInstance{
+    display: flex;
+    justify-content: center;
+    color: red;
+    margin-top: 100px;
+}
+
+.container{
     display: flex;
     flex-direction: column;
     background-color:rgb(46, 45, 45); 
 }
 
-#menuRoot{
+.menuRoot{
     height: 75px;
     background-color:rgb(46, 45, 45); 
     box-shadow: 0px 0px;
@@ -17,73 +39,9 @@
     height: 75px;
     justify-content: space-between;
     background-color: rgb(46, 45, 45);
-
-
 }
 
-
-.sidebarAndBossInfo{
-    display: flex;
-    flex-direction: row;
-}
-.bossIntroAndInfo{
-    margin-left: 255px;
-    margin-top: 60px;
-    width: 100%;
-}
-.Sidebar{
-
-}
-
-
-.buttons {
-    display: flex;
-    justify-content: center;
- 
-    height: 20px;
-    background: none!important;
-    border: none;
-    padding: 0!important;
-  
-    width: 20%;
-    
-    /*optional*/
-    font-family: arial, sans-serif;
-    /*input has OS specific font-family*/
-    color: #069;
-    text-decoration: underline;
-    cursor: pointer;
-    
-}
-
-
-
-#selectBossIntro{
-    display: flex;
-    justify-content: center;
-}
-
-.enterDungeonText{
-    display: flex;
-    justify-content: center;
-}
-
-#enterValidInstance{
-    display: flex;
-    justify-content: center;
-    color: red;
-    margin-top: 100px;
-}
-
-
-#loginRegister{
-    display: flex;
-    justify-content: flex-end;
-  
-    width: 12%;
-    flex: 1;
-}
-#appTitle{
+.appTitle{
     display: flex;
     flex: 1;
     color: rgb(242, 242, 242);
@@ -91,29 +49,59 @@
     border:none; 
     outline: none;
     cursor: pointer;
-
 }
 
-#dungeonFormDiv{
+.dungeonFormDiv{
     display: flex;
     justify-content: center;
     flex: 2;
 }
 
-
-
-#rootDiv{
-    background-size:contain;
-    
+.loginRegister{
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
 }
-#selectBossIntro{
-    background-size: contain;
-    height: 100vh;
-    color: white;
+
+.favoriteLogoutButtons{
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.registerButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: rgb(242, 242, 242);
+    text-decoration: none;
+    width: 70px;
+    height:  25px;
+    border: 2px solid rgb(67, 63, 63);
+    background-color: rgb(187, 34, 17);
+    color: rgb(242, 242, 242);
+}
+
+.sidebarAndBossInfo{
+    display: flex;
+    flex-direction: row;
+}
+
+.bossIntroAndInfo{
+    margin-left: 255px;
+    margin-top: 60px;
+    width: 100%;
+}
+
+.selectBossIntro{
+    
+    color: rgb(242, 242, 242);
     margin-left: 20px;
-    margin-top: 85px;
-    
+    margin-top: 40px;
 }
+
+
 html,body{
     margin:0;
 }
