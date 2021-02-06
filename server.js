@@ -1,26 +1,32 @@
 const express = require('express');
+const path = require('path');
+const publicPath = path.join(__dirname, 'build');
+let CONFIG = require('./src/apikeys.json');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser')
-const port = 8080;
+const port = process.env.PORT || 8080
 const assert = require('assert');
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://mchin:lazdaCilRytXKW5C@cluster0.yc6vs.mongodb.net/dungeonJournal?retryWrites=true&w=majority";
+const uri = "mongodb+srv://mchin:" + CONFIG.mongoPassword + "@cluster0.yc6vs.mongodb.net/dungeonJournal?retryWrites=true&w=majority";
 const bcrypt = require('bcrypt');
 const { resolve } = require('path');
 const saltRounds = 10;
 const session = require('express-session');
+const favicon = require('serve-favicon');
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'build')));
+app.use(favicon(path.join(__dirname, 'build', 'favicon.ico')))
 
+//console.log(path.join(__dirname, '..', 'public'));
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 // passport middleware
 app.use(passport.initialize());
 app.use(passport.session()); // persist login sessions 
-
 
 const isLoggedIn = (req, res, next) => {
     console.log(req.isAuthenticated());
@@ -186,11 +192,19 @@ const createFavorites = async (username) => {
 
     client.close();
 }
-
+/*
 app.get('/', (req, res) => {
     res.send('Server Online');
-});
+}); */
 
+console.log(path.join(__dirname, 'build', 'index.html'))
+console.log(publicPath);
+console.log(path.join(publicPath, 'index.html'))
+//console.log(path.join(publicPath, 'index.html'))
+app.get('/*', (req, res) => {
+
+    res.sendFile(path.join(publicPath, 'index.html'));
+});
 
 app.post('/favorites', async (req, res) => {
     console.log(req.body.cookie)
@@ -298,7 +312,6 @@ passport.serializeUser((username, done) => {
 passport.deserializeUser((username, done) => {
     return done(null, username);
 });
-
 
 
 
